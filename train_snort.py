@@ -9,22 +9,10 @@ from sklearn.model_selection import train_test_split
 
 
 def min_max_scaling(data, min_vals, max_vals):
-    """
-    Perform Min-Max scaling on the data using the given minimum and maximum values.
-
-    Args:
-    - data: Input data to be scaled (numpy array).
-    - min_vals: Minimum values for each feature (numpy array).
-    - max_vals: Maximum values for each feature (numpy array).
-
-    Returns:
-    - Scaled data (numpy array).
-    """
     scaled_data = (data - min_vals) / (max_vals - min_vals)
     return scaled_data
 
 
-# Load the CSV data
 
 
 tf.config.set_visible_devices([], 'GPU')
@@ -40,14 +28,14 @@ data = pd.read_csv('/Users/kucera.rosta/Desktop/data_labeled.csv', header=None)
 X = data.iloc[:, :-1]  # Features
 Y = data.iloc[:, -1]   # Labels
 
-# Scale the features
+# Normalize data
 scaler = MinMaxScaler()
 X_normalized = scaler.fit_transform(X)
 
 # Split data into training and testing sets
 X_train, X_test, Y_train, Y_test = train_test_split(X_normalized, Y, test_size=0.2, random_state=42)
 
-# Build Model (Simple feedforward neural network)
+# Build model
 model = tf.keras.Sequential([
     layers.Input(shape=(X_normalized.shape[1],)),  # Adjust input shape
     layers.Dense(32, activation='relu'),
@@ -87,13 +75,10 @@ scaler.fit(X)
 min_values = scaler.data_min_
 max_values = scaler.data_max_
 
-# Open a binary file in write mode
 with open("scaler_info_full.bin", "wb") as file:
-    # Write min values count and min values
     file.write(struct.pack('<I', len(min_values)))
     file.write(struct.pack('<' + 'd'*len(min_values), *min_values))
     
-    # Write max values count and max values
     file.write(struct.pack('<I', len(max_values)))
     file.write(struct.pack('<' + 'd'*len(max_values), *max_values))
 
