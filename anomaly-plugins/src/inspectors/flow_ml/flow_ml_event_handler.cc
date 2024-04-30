@@ -49,54 +49,44 @@ std::vector<float> minMaxScaling(const std::vector<float>& data, const std::vect
 ScalerInfo loadScalerInfo(const std::string& filename) {
     ScalerInfo scaler_info;
 
-    // Open the binary file
     std::ifstream file(filename, std::ios::binary);
     if (!file) {
         std::cerr << "Error opening file." << std::endl;
-        return scaler_info; // Return empty struct if file cannot be opened
+        return scaler_info;
     }
 
-    // Read min values count
     uint32_t min_count;
     file.read(reinterpret_cast<char*>(&min_count), sizeof(min_count));
 
-    // Read min values (double)
     std::vector<double> temp_min_values(min_count);
     file.read(reinterpret_cast<char*>(temp_min_values.data()), min_count * sizeof(double));
 
-    // Convert double values to float
     scaler_info.min_values.resize(min_count);
     for (size_t i = 0; i < min_count; ++i) {
         scaler_info.min_values[i] = static_cast<float>(temp_min_values[i]);
     }
 
-    // Read max values count
     uint32_t max_count;
     file.read(reinterpret_cast<char*>(&max_count), sizeof(max_count));
 
-    // Read max values (double)
     std::vector<double> temp_max_values(max_count);
     file.read(reinterpret_cast<char*>(temp_max_values.data()), max_count * sizeof(double));
 
-    // Convert double values to float
     scaler_info.max_values.resize(max_count);
     for (size_t i = 0; i < max_count; ++i) {
         scaler_info.max_values[i] = static_cast<float>(temp_max_values[i]);
     }
 
-    file.close(); // Close the file
+    file.close(); 
 
     return scaler_info;
 }
 
 std::string convertSecondsToDateTime(long seconds) {
-    // Convert seconds to time_t
     time_t timestamp = seconds;
 
-    // Convert timestamp to a struct tm
     struct tm* timeinfo = localtime(&timestamp);
 
-    // Format timeinfo as a string
     char buffer[80];
     strftime(buffer, 80, "%Y-%m-%d %H:%M:%S", timeinfo);
 
@@ -163,10 +153,8 @@ void FlowMLEventHandler::handle(DataEvent& event, Flow* flow)
 
     std::vector<float> new_data = {(float)proto, (float)src_bytes, (float)src_pkts, (float)dst_bytes, (float)dst_pkts};
 
-    // Normalize the data using Min-Max scaling
     std::vector<float> normalized_data = minMaxScaling(new_data, scaler_info.min_values, scaler_info.max_values);
 
-    // Run inference
     float output;
     if (!config.classifier.runFlowModel(normalized_data[0], normalized_data[1], normalized_data[2], normalized_data[3], normalized_data[4], output)) {
         std::cerr << "Failed to run inference." << std::endl;

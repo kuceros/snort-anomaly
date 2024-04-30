@@ -168,13 +168,10 @@ static const Parameter s_params[] =
     { nullptr, Parameter::PT_MAX, nullptr, nullptr, nullptr }
 };
 std::string convertSecondsToDateTime(long seconds) {
-    // Convert seconds to time_t
     time_t timestamp = seconds;
 
-    // Convert timestamp to a struct tm
     struct tm* timeinfo = localtime(&timestamp);
 
-    // Format timeinfo as a string
     char buffer[80];
     strftime(buffer, 80, "%Y-%m-%d %H:%M:%S", timeinfo);
 
@@ -267,22 +264,16 @@ DoSJsonLogger::DoSJsonLogger(DoSJsonModule* m) : file(m->file ? F_NAME : "stdout
     string file_in = m->mapping; 
     ifstream map_file(file_in);
 
-    // Check if the file is opened successfully
     if (!map_file.is_open()) {
         ErrorMessage("Error opening mapping file");
         return ;
     }
 
-    // Read the file line by line
     string line;
     getline(map_file, line);
     while (getline(map_file, line)) {
-        // Create a stringstream from the line
         istringstream ss(line);
 
-        // Define a map to store data for this line
-
-        // Read each column of the line
         string sid;
         string proto, source, src_port, destination, dst_port, classtype, direction, TActic, Technique, Tname, TA_inb, T_inb, TA_lat, T_lat, TA_out, T_out, msg, reference, arrow;
         char comma;
@@ -306,17 +297,13 @@ DoSJsonLogger::DoSJsonLogger(DoSJsonModule* m) : file(m->file ? F_NAME : "stdout
             std::getline(ss, T_lat, ',') && 
             std::getline(ss, TA_out, ',') && 
             std::getline(ss, T_out, ',') && 
-            std::getline(ss, msg, ',')) { // Note: No comma after msg
+            std::getline(ss, msg, ',')) { 
 
-            // Read reference field until next comma or newline character
             if (std::getline(ss, reference, '\n')) {
-                // reference field was successfully read
             } else {
-                // reference field is missing or empty
-                reference = ""; // or any default value you prefer
+                reference = ""; 
             }
             
-            // Store the parsed data into the map
             Mitre mitre_data;
             mitre_data.classtype = classtype;
             mitre_data.direction = direction;
@@ -334,7 +321,6 @@ DoSJsonLogger::DoSJsonLogger(DoSJsonModule* m) : file(m->file ? F_NAME : "stdout
             rules_map[std::stoi(sid)] = mitre_data;
         }
     }  
-    // Close the file
     map_file.close();
 }
 

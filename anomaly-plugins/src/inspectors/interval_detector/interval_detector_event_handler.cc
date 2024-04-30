@@ -72,14 +72,11 @@ void saveModel(const std::map<std::string, GroupThreshold>& thresholds_map, int 
     size_t map_size = thresholds_map.size();
     outfile.write(reinterpret_cast<const char*>(&map_size), sizeof(size_t));
 
-    // Iterate over the map and write each key-value pair
     for (const auto& pair : thresholds_map) {
-        // Write the length of the key and the key itself
         size_t key_size = pair.first.size();
         outfile.write(reinterpret_cast<const char*>(&key_size), sizeof(size_t));
         outfile.write(pair.first.data(), key_size);
 
-        // Write the GroupThreshold object (assuming it's a POD type)
         outfile.write(reinterpret_cast<const char*>(&pair.second), sizeof(GroupThreshold));
     }
 
@@ -95,10 +92,8 @@ std::pair<std::map<std::string, GroupThreshold>, int> loadModel(const std::strin
         throw std::runtime_error("Error opening file: " + filename);
     }
 
-    // Read the interval from the file
     infile.read(reinterpret_cast<char*>(&interval), sizeof(int));
 
-    // Read the size of the map
     size_t map_size;
     infile.read(reinterpret_cast<char*>(&map_size), sizeof(size_t));
 
@@ -109,7 +104,6 @@ std::pair<std::map<std::string, GroupThreshold>, int> loadModel(const std::strin
     double sum_dst_count_thresh = 0.0;
     double sum_src_count_thresh = 0.0;
 
-    // Iterate over the stored pairs and populate the map
     for (size_t i = 0; i < map_size; ++i) {
         // Read the length of the key
         size_t key_size;
@@ -118,7 +112,6 @@ std::pair<std::map<std::string, GroupThreshold>, int> loadModel(const std::strin
             throw std::runtime_error("Error reading key size from file: " + filename);
         }
 
-        // Read the key
         std::string key;
         key.resize(key_size);
         infile.read(&key[0], key_size);
@@ -126,13 +119,11 @@ std::pair<std::map<std::string, GroupThreshold>, int> loadModel(const std::strin
             throw std::runtime_error("Error reading key from file: " + filename);
         }
 
-        // Read the GroupThreshold object
         GroupThreshold value;
         infile.read(reinterpret_cast<char*>(&value), sizeof(GroupThreshold));
         if (infile.fail()) {
             throw std::runtime_error("Error reading GroupThreshold from file: " + filename);
         }
-        // Insert into the map
         thresholds_map[key] = value;
         sum_src_pkt_thresh += value.src_pkt_thresh;
         sum_src_bytes_thresh += value.src_bytes_thresh;
@@ -158,7 +149,6 @@ std::pair<std::map<std::string, GroupThreshold>, int> loadModel(const std::strin
 
 
 float minMaxNormalize(int value, int max_val) {
-    // Normalize the value
     float normalized_value = (float)(value - 0) / (max_val - 0);
     return normalized_value;
 }
