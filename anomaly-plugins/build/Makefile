@@ -57,10 +57,10 @@ RM = /usr/local/Cellar/cmake/3.29.0/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82
+CMAKE_SOURCE_DIR = /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build
+CMAKE_BINARY_DIR = /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -78,7 +78,7 @@ package/fast: package
 # Special rule for the target package_source
 package_source:
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Run CPack packaging tool for source..."
-	/usr/local/Cellar/cmake/3.29.0/bin/cpack --config ./CPackSourceConfig.cmake /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build/CPackSourceConfig.cmake
+	/usr/local/Cellar/cmake/3.29.0/bin/cpack --config ./CPackSourceConfig.cmake /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build/CPackSourceConfig.cmake
 .PHONY : package_source
 
 # Special rule for the target package_source
@@ -152,9 +152,9 @@ install/strip/fast: preinstall/fast
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build/CMakeFiles /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build/CMakeFiles /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -180,136 +180,6 @@ preinstall/fast:
 depend:
 	$(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
-
-#=============================================================================
-# Target rules for targets named cd_eapol
-
-# Build rule for target.
-cd_eapol: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 cd_eapol
-.PHONY : cd_eapol
-
-# fast build rule for target.
-cd_eapol/fast:
-	$(MAKE) $(MAKESILENT) -f src/codecs/cd_eapol/CMakeFiles/cd_eapol.dir/build.make src/codecs/cd_eapol/CMakeFiles/cd_eapol.dir/build
-.PHONY : cd_eapol/fast
-
-#=============================================================================
-# Target rules for targets named cd_linux_sll
-
-# Build rule for target.
-cd_linux_sll: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 cd_linux_sll
-.PHONY : cd_linux_sll
-
-# fast build rule for target.
-cd_linux_sll/fast:
-	$(MAKE) $(MAKESILENT) -f src/codecs/cd_linux_sll/CMakeFiles/cd_linux_sll.dir/build.make src/codecs/cd_linux_sll/CMakeFiles/cd_linux_sll.dir/build
-.PHONY : cd_linux_sll/fast
-
-#=============================================================================
-# Target rules for targets named cd_null
-
-# Build rule for target.
-cd_null: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 cd_null
-.PHONY : cd_null
-
-# fast build rule for target.
-cd_null/fast:
-	$(MAKE) $(MAKESILENT) -f src/codecs/cd_null/CMakeFiles/cd_null.dir/build.make src/codecs/cd_null/CMakeFiles/cd_null.dir/build
-.PHONY : cd_null/fast
-
-#=============================================================================
-# Target rules for targets named cd_pflog
-
-# Build rule for target.
-cd_pflog: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 cd_pflog
-.PHONY : cd_pflog
-
-# fast build rule for target.
-cd_pflog/fast:
-	$(MAKE) $(MAKESILENT) -f src/codecs/cd_pflog/CMakeFiles/cd_pflog.dir/build.make src/codecs/cd_pflog/CMakeFiles/cd_pflog.dir/build
-.PHONY : cd_pflog/fast
-
-#=============================================================================
-# Target rules for targets named cd_pbb
-
-# Build rule for target.
-cd_pbb: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 cd_pbb
-.PHONY : cd_pbb
-
-# fast build rule for target.
-cd_pbb/fast:
-	$(MAKE) $(MAKESILENT) -f src/codecs/cd_pbb/CMakeFiles/cd_pbb.dir/build.make src/codecs/cd_pbb/CMakeFiles/cd_pbb.dir/build
-.PHONY : cd_pbb/fast
-
-#=============================================================================
-# Target rules for targets named cd_ppp
-
-# Build rule for target.
-cd_ppp: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 cd_ppp
-.PHONY : cd_ppp
-
-# fast build rule for target.
-cd_ppp/fast:
-	$(MAKE) $(MAKESILENT) -f src/codecs/cd_ppp/CMakeFiles/cd_ppp.dir/build.make src/codecs/cd_ppp/CMakeFiles/cd_ppp.dir/build
-.PHONY : cd_ppp/fast
-
-#=============================================================================
-# Target rules for targets named cd_slip
-
-# Build rule for target.
-cd_slip: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 cd_slip
-.PHONY : cd_slip
-
-# fast build rule for target.
-cd_slip/fast:
-	$(MAKE) $(MAKESILENT) -f src/codecs/cd_slip/CMakeFiles/cd_slip.dir/build.make src/codecs/cd_slip/CMakeFiles/cd_slip.dir/build
-.PHONY : cd_slip/fast
-
-#=============================================================================
-# Target rules for targets named cd_token_ring
-
-# Build rule for target.
-cd_token_ring: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 cd_token_ring
-.PHONY : cd_token_ring
-
-# fast build rule for target.
-cd_token_ring/fast:
-	$(MAKE) $(MAKESILENT) -f src/codecs/cd_token_ring/CMakeFiles/cd_token_ring.dir/build.make src/codecs/cd_token_ring/CMakeFiles/cd_token_ring.dir/build
-.PHONY : cd_token_ring/fast
-
-#=============================================================================
-# Target rules for targets named cd_wlan
-
-# Build rule for target.
-cd_wlan: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 cd_wlan
-.PHONY : cd_wlan
-
-# fast build rule for target.
-cd_wlan/fast:
-	$(MAKE) $(MAKESILENT) -f src/codecs/cd_wlan/CMakeFiles/cd_wlan.dir/build.make src/codecs/cd_wlan/CMakeFiles/cd_wlan.dir/build
-.PHONY : cd_wlan/fast
-
-#=============================================================================
-# Target rules for targets named daq_socket
-
-# Build rule for target.
-daq_socket: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 daq_socket
-.PHONY : daq_socket
-
-# fast build rule for target.
-daq_socket/fast:
-	$(MAKE) $(MAKESILENT) -f src/daqs/daq_socket/CMakeFiles/daq_socket.dir/build.make src/daqs/daq_socket/CMakeFiles/daq_socket.dir/build
-.PHONY : daq_socket/fast
 
 #=============================================================================
 # Target rules for targets named interval_detector
@@ -338,188 +208,6 @@ flow_ml/fast:
 .PHONY : flow_ml/fast
 
 #=============================================================================
-# Target rules for targets named appid_listener
-
-# Build rule for target.
-appid_listener: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 appid_listener
-.PHONY : appid_listener
-
-# fast build rule for target.
-appid_listener/fast:
-	$(MAKE) $(MAKESILENT) -f src/inspectors/appid_listener/CMakeFiles/appid_listener.dir/build.make src/inspectors/appid_listener/CMakeFiles/appid_listener.dir/build
-.PHONY : appid_listener/fast
-
-#=============================================================================
-# Target rules for targets named kaizen
-
-# Build rule for target.
-kaizen: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 kaizen
-.PHONY : kaizen
-
-# fast build rule for target.
-kaizen/fast:
-	$(MAKE) $(MAKESILENT) -f src/inspectors/kaizen/CMakeFiles/kaizen.dir/build.make src/inspectors/kaizen/CMakeFiles/kaizen.dir/build
-.PHONY : kaizen/fast
-
-#=============================================================================
-# Target rules for targets named data_log
-
-# Build rule for target.
-data_log: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 data_log
-.PHONY : data_log
-
-# fast build rule for target.
-data_log/fast:
-	$(MAKE) $(MAKESILENT) -f src/inspectors/data_log/CMakeFiles/data_log.dir/build.make src/inspectors/data_log/CMakeFiles/data_log.dir/build
-.PHONY : data_log/fast
-
-#=============================================================================
-# Target rules for targets named domain_filter
-
-# Build rule for target.
-domain_filter: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 domain_filter
-.PHONY : domain_filter
-
-# fast build rule for target.
-domain_filter/fast:
-	$(MAKE) $(MAKESILENT) -f src/inspectors/domain_filter/CMakeFiles/domain_filter.dir/build.make src/inspectors/domain_filter/CMakeFiles/domain_filter.dir/build
-.PHONY : domain_filter/fast
-
-#=============================================================================
-# Target rules for targets named dpx
-
-# Build rule for target.
-dpx: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 dpx
-.PHONY : dpx
-
-# fast build rule for target.
-dpx/fast:
-	$(MAKE) $(MAKESILENT) -f src/inspectors/dpx/CMakeFiles/dpx.dir/build.make src/inspectors/dpx/CMakeFiles/dpx.dir/build
-.PHONY : dpx/fast
-
-#=============================================================================
-# Target rules for targets named mem_test
-
-# Build rule for target.
-mem_test: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 mem_test
-.PHONY : mem_test
-
-# fast build rule for target.
-mem_test/fast:
-	$(MAKE) $(MAKESILENT) -f src/inspectors/mem_test/CMakeFiles/mem_test.dir/build.make src/inspectors/mem_test/CMakeFiles/mem_test.dir/build
-.PHONY : mem_test/fast
-
-#=============================================================================
-# Target rules for targets named cpeos_test
-
-# Build rule for target.
-cpeos_test: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 cpeos_test
-.PHONY : cpeos_test
-
-# fast build rule for target.
-cpeos_test/fast:
-	$(MAKE) $(MAKESILENT) -f src/inspectors/cpeos_test/CMakeFiles/cpeos_test.dir/build.make src/inspectors/cpeos_test/CMakeFiles/cpeos_test.dir/build
-.PHONY : cpeos_test/fast
-
-#=============================================================================
-# Target rules for targets named null_trace_logger
-
-# Build rule for target.
-null_trace_logger: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 null_trace_logger
-.PHONY : null_trace_logger
-
-# fast build rule for target.
-null_trace_logger/fast:
-	$(MAKE) $(MAKESILENT) -f src/inspectors/null_trace_logger/CMakeFiles/null_trace_logger.dir/build.make src/inspectors/null_trace_logger/CMakeFiles/null_trace_logger.dir/build
-.PHONY : null_trace_logger/fast
-
-#=============================================================================
-# Target rules for targets named ips_pkt_num
-
-# Build rule for target.
-ips_pkt_num: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ips_pkt_num
-.PHONY : ips_pkt_num
-
-# fast build rule for target.
-ips_pkt_num/fast:
-	$(MAKE) $(MAKESILENT) -f src/ips_options/ips_pkt_num/CMakeFiles/ips_pkt_num.dir/build.make src/ips_options/ips_pkt_num/CMakeFiles/ips_pkt_num.dir/build
-.PHONY : ips_pkt_num/fast
-
-#=============================================================================
-# Target rules for targets named ips_mss
-
-# Build rule for target.
-ips_mss: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ips_mss
-.PHONY : ips_mss
-
-# fast build rule for target.
-ips_mss/fast:
-	$(MAKE) $(MAKESILENT) -f src/ips_options/ips_mss/CMakeFiles/ips_mss.dir/build.make src/ips_options/ips_mss/CMakeFiles/ips_mss.dir/build
-.PHONY : ips_mss/fast
-
-#=============================================================================
-# Target rules for targets named ips_urg
-
-# Build rule for target.
-ips_urg: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ips_urg
-.PHONY : ips_urg
-
-# fast build rule for target.
-ips_urg/fast:
-	$(MAKE) $(MAKESILENT) -f src/ips_options/ips_urg/CMakeFiles/ips_urg.dir/build.make src/ips_options/ips_urg/CMakeFiles/ips_urg.dir/build
-.PHONY : ips_urg/fast
-
-#=============================================================================
-# Target rules for targets named ips_wscale
-
-# Build rule for target.
-ips_wscale: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 ips_wscale
-.PHONY : ips_wscale
-
-# fast build rule for target.
-ips_wscale/fast:
-	$(MAKE) $(MAKESILENT) -f src/ips_options/ips_wscale/CMakeFiles/ips_wscale.dir/build.make src/ips_options/ips_wscale/CMakeFiles/ips_wscale.dir/build
-.PHONY : ips_wscale/fast
-
-#=============================================================================
-# Target rules for targets named alert_mitre_full
-
-# Build rule for target.
-alert_mitre_full: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 alert_mitre_full
-.PHONY : alert_mitre_full
-
-# fast build rule for target.
-alert_mitre_full/fast:
-	$(MAKE) $(MAKESILENT) -f src/loggers/alert_mitre_full/CMakeFiles/alert_mitre_full.dir/build.make src/loggers/alert_mitre_full/CMakeFiles/alert_mitre_full.dir/build
-.PHONY : alert_mitre_full/fast
-
-#=============================================================================
-# Target rules for targets named alert_mitre_csv
-
-# Build rule for target.
-alert_mitre_csv: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 alert_mitre_csv
-.PHONY : alert_mitre_csv
-
-# fast build rule for target.
-alert_mitre_csv/fast:
-	$(MAKE) $(MAKESILENT) -f src/loggers/alert_mitre_csv/CMakeFiles/alert_mitre_csv.dir/build.make src/loggers/alert_mitre_csv/CMakeFiles/alert_mitre_csv.dir/build
-.PHONY : alert_mitre_csv/fast
-
-#=============================================================================
 # Target rules for targets named alert_dos_json
 
 # Build rule for target.
@@ -531,71 +219,6 @@ alert_dos_json: cmake_check_build_system
 alert_dos_json/fast:
 	$(MAKE) $(MAKESILENT) -f src/loggers/alert_dos_json/CMakeFiles/alert_dos_json.dir/build.make src/loggers/alert_dos_json/CMakeFiles/alert_dos_json.dir/build
 .PHONY : alert_dos_json/fast
-
-#=============================================================================
-# Target rules for targets named alert_ex
-
-# Build rule for target.
-alert_ex: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 alert_ex
-.PHONY : alert_ex
-
-# fast build rule for target.
-alert_ex/fast:
-	$(MAKE) $(MAKESILENT) -f src/loggers/alert_ex/CMakeFiles/alert_ex.dir/build.make src/loggers/alert_ex/CMakeFiles/alert_ex.dir/build
-.PHONY : alert_ex/fast
-
-#=============================================================================
-# Target rules for targets named log_null
-
-# Build rule for target.
-log_null: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 log_null
-.PHONY : log_null
-
-# fast build rule for target.
-log_null/fast:
-	$(MAKE) $(MAKESILENT) -f src/loggers/log_null/CMakeFiles/log_null.dir/build.make src/loggers/log_null/CMakeFiles/log_null.dir/build
-.PHONY : log_null/fast
-
-#=============================================================================
-# Target rules for targets named lowmem
-
-# Build rule for target.
-lowmem: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lowmem
-.PHONY : lowmem
-
-# fast build rule for target.
-lowmem/fast:
-	$(MAKE) $(MAKESILENT) -f src/search_engines/lowmem/CMakeFiles/lowmem.dir/build.make src/search_engines/lowmem/CMakeFiles/lowmem.dir/build
-.PHONY : lowmem/fast
-
-#=============================================================================
-# Target rules for targets named sid_18758
-
-# Build rule for target.
-sid_18758: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sid_18758
-.PHONY : sid_18758
-
-# fast build rule for target.
-sid_18758/fast:
-	$(MAKE) $(MAKESILENT) -f src/so_rules/sid_18758/CMakeFiles/sid_18758.dir/build.make src/so_rules/sid_18758/CMakeFiles/sid_18758.dir/build
-.PHONY : sid_18758/fast
-
-#=============================================================================
-# Target rules for targets named tp_appid_example
-
-# Build rule for target.
-tp_appid_example: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tp_appid_example
-.PHONY : tp_appid_example
-
-# fast build rule for target.
-tp_appid_example/fast:
-	$(MAKE) $(MAKESILENT) -f src/tp_appid/CMakeFiles/tp_appid_example.dir/build.make src/tp_appid/CMakeFiles/tp_appid_example.dir/build
-.PHONY : tp_appid_example/fast
 
 # Help Target
 help:
@@ -612,37 +235,8 @@ help:
 	@echo "... package_source"
 	@echo "... rebuild_cache"
 	@echo "... alert_dos_json"
-	@echo "... alert_ex"
-	@echo "... alert_mitre_csv"
-	@echo "... alert_mitre_full"
-	@echo "... appid_listener"
-	@echo "... cd_eapol"
-	@echo "... cd_linux_sll"
-	@echo "... cd_null"
-	@echo "... cd_pbb"
-	@echo "... cd_pflog"
-	@echo "... cd_ppp"
-	@echo "... cd_slip"
-	@echo "... cd_token_ring"
-	@echo "... cd_wlan"
-	@echo "... cpeos_test"
-	@echo "... daq_socket"
-	@echo "... data_log"
-	@echo "... domain_filter"
-	@echo "... dpx"
 	@echo "... flow_ml"
 	@echo "... interval_detector"
-	@echo "... ips_mss"
-	@echo "... ips_pkt_num"
-	@echo "... ips_urg"
-	@echo "... ips_wscale"
-	@echo "... kaizen"
-	@echo "... log_null"
-	@echo "... lowmem"
-	@echo "... mem_test"
-	@echo "... null_trace_logger"
-	@echo "... sid_18758"
-	@echo "... tp_appid_example"
 .PHONY : help
 
 

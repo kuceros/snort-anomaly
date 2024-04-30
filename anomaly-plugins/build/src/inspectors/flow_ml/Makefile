@@ -57,10 +57,10 @@ RM = /usr/local/Cellar/cmake/3.29.0/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82
+CMAKE_SOURCE_DIR = /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build
+CMAKE_BINARY_DIR = /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -68,7 +68,7 @@ CMAKE_BINARY_DIR = /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/buil
 # Special rule for the target package
 package: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Run CPack packaging tool..."
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && /usr/local/Cellar/cmake/3.29.0/bin/cpack --config ./CPackConfig.cmake
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && /usr/local/Cellar/cmake/3.29.0/bin/cpack --config ./CPackConfig.cmake
 .PHONY : package
 
 # Special rule for the target package
@@ -78,7 +78,7 @@ package/fast: package
 # Special rule for the target package_source
 package_source:
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Run CPack packaging tool for source..."
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && /usr/local/Cellar/cmake/3.29.0/bin/cpack --config ./CPackSourceConfig.cmake /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build/CPackSourceConfig.cmake
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && /usr/local/Cellar/cmake/3.29.0/bin/cpack --config ./CPackSourceConfig.cmake /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build/CPackSourceConfig.cmake
 .PHONY : package_source
 
 # Special rule for the target package_source
@@ -152,14 +152,14 @@ install/strip/fast: preinstall/fast
 
 # The main all target
 all: cmake_check_build_system
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && $(CMAKE_COMMAND) -E cmake_progress_start /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build/CMakeFiles /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build/src/inspectors/flow_ml//CMakeFiles/progress.marks
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/inspectors/flow_ml/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build/CMakeFiles 0
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && $(CMAKE_COMMAND) -E cmake_progress_start /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build/CMakeFiles /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build/src/inspectors/flow_ml//CMakeFiles/progress.marks
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/inspectors/flow_ml/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/inspectors/flow_ml/clean
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/inspectors/flow_ml/clean
 .PHONY : clean
 
 # The main clean target
@@ -168,22 +168,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/inspectors/flow_ml/preinstall
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/inspectors/flow_ml/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/inspectors/flow_ml/preinstall
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/inspectors/flow_ml/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/rule:
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/rule
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/rule
 .PHONY : src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/rule
 
 # Convenience name for target.
@@ -192,7 +192,7 @@ flow_ml: src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/rule
 
 # fast build rule for target.
 flow_ml/fast:
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && $(MAKE) $(MAKESILENT) -f src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/build.make src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/build
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && $(MAKE) $(MAKESILENT) -f src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/build.make src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/build
 .PHONY : flow_ml/fast
 
 flow_ml.o: flow_ml.cc.o
@@ -200,7 +200,7 @@ flow_ml.o: flow_ml.cc.o
 
 # target to build an object file
 flow_ml.cc.o:
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && $(MAKE) $(MAKESILENT) -f src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/build.make src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/flow_ml.cc.o
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && $(MAKE) $(MAKESILENT) -f src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/build.make src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/flow_ml.cc.o
 .PHONY : flow_ml.cc.o
 
 flow_ml.i: flow_ml.cc.i
@@ -208,7 +208,7 @@ flow_ml.i: flow_ml.cc.i
 
 # target to preprocess a source file
 flow_ml.cc.i:
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && $(MAKE) $(MAKESILENT) -f src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/build.make src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/flow_ml.cc.i
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && $(MAKE) $(MAKESILENT) -f src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/build.make src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/flow_ml.cc.i
 .PHONY : flow_ml.cc.i
 
 flow_ml.s: flow_ml.cc.s
@@ -216,7 +216,7 @@ flow_ml.s: flow_ml.cc.s
 
 # target to generate assembly for a file
 flow_ml.cc.s:
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && $(MAKE) $(MAKESILENT) -f src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/build.make src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/flow_ml.cc.s
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && $(MAKE) $(MAKESILENT) -f src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/build.make src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/flow_ml.cc.s
 .PHONY : flow_ml.cc.s
 
 flow_ml_event_handler.o: flow_ml_event_handler.cc.o
@@ -224,7 +224,7 @@ flow_ml_event_handler.o: flow_ml_event_handler.cc.o
 
 # target to build an object file
 flow_ml_event_handler.cc.o:
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && $(MAKE) $(MAKESILENT) -f src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/build.make src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/flow_ml_event_handler.cc.o
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && $(MAKE) $(MAKESILENT) -f src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/build.make src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/flow_ml_event_handler.cc.o
 .PHONY : flow_ml_event_handler.cc.o
 
 flow_ml_event_handler.i: flow_ml_event_handler.cc.i
@@ -232,7 +232,7 @@ flow_ml_event_handler.i: flow_ml_event_handler.cc.i
 
 # target to preprocess a source file
 flow_ml_event_handler.cc.i:
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && $(MAKE) $(MAKESILENT) -f src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/build.make src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/flow_ml_event_handler.cc.i
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && $(MAKE) $(MAKESILENT) -f src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/build.make src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/flow_ml_event_handler.cc.i
 .PHONY : flow_ml_event_handler.cc.i
 
 flow_ml_event_handler.s: flow_ml_event_handler.cc.s
@@ -240,7 +240,7 @@ flow_ml_event_handler.s: flow_ml_event_handler.cc.s
 
 # target to generate assembly for a file
 flow_ml_event_handler.cc.s:
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && $(MAKE) $(MAKESILENT) -f src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/build.make src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/flow_ml_event_handler.cc.s
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && $(MAKE) $(MAKESILENT) -f src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/build.make src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/flow_ml_event_handler.cc.s
 .PHONY : flow_ml_event_handler.cc.s
 
 # Help Target
@@ -275,6 +275,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

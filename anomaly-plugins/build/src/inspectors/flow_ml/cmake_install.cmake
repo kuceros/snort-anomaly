@@ -1,4 +1,4 @@
-# Install script for directory: /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/src/inspectors/flow_ml
+# Install script for directory: /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/src/inspectors/flow_ml
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -38,7 +38,7 @@ if(NOT DEFINED CMAKE_OBJDUMP)
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/snort/plugins/extra/inspectors" TYPE MODULE FILES "/Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build/src/inspectors/flow_ml/flow_ml.so")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/snort/plugins/extra/inspectors" TYPE MODULE FILES "/Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build/src/inspectors/flow_ml/flow_ml.so")
   if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/snort/plugins/extra/inspectors/flow_ml.so" AND
      NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/snort/plugins/extra/inspectors/flow_ml.so")
     if(CMAKE_INSTALL_DO_STRIP)

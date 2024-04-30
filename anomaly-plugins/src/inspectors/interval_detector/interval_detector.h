@@ -39,7 +39,7 @@
 
 struct IntervalDetectorConfig
 {
-    bool json_logging = false;
+    bool label_logging = false;
     bool training = false;
     std::string file_name;
     std::string model;

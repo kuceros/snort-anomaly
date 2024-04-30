@@ -89,12 +89,6 @@ public:
 private:
     IntervalDetectorConfig& config;
 
-    void print_message(const char*, const char*, const snort::Flow&, PegCount,
-        AppId, AppId, AppId, AppId, AppId);
-    void print_json_message(snort::JsonStream&, const char*, uint32_t, const char*, const snort::Flow&,
-        PegCount, const snort::AppIdSessionApi&, AppId, AppId, AppId, AppId, AppId, bool, uint32_t,
-        const snort::Packet*, const char*, const char*);
-
     bool appid_changed(const AppidChangeBits& ac_bits) const
     {
         if (ac_bits.test(APPID_RESET_BIT) or ac_bits.test(APPID_SERVICE_BIT) or
@@ -120,17 +114,6 @@ private:
         default:
             return std::to_string(ip_proto);
         }
-    }
-
-    void print_header(const char* cli_ip_str, const char* srv_ip_str, uint16_t client_port,
-        uint16_t server_port, uint8_t ip_proto, PegCount packet_number)
-    {
-        std::ostringstream ss;
-
-        ss << cli_ip_str << ":" << client_port << "<->" << srv_ip_str << ":" << server_port <<
-            " proto: " << (unsigned)ip_proto << " packet: " << packet_number;
-        if (!write_to_file(ss.str()))
-            snort::LogMessage("%s", ss.str().c_str());
     }
 
     bool write_to_file(const std::string& str)

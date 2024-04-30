@@ -1,5 +1,5 @@
 src/loggers/alert_dos_json/CMakeFiles/alert_dos_json.dir/alert_dos_json.cc.o: \
-  /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/src/loggers/alert_dos_json/alert_dos_json.cc \
+  /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/src/loggers/alert_dos_json/alert_dos_json.cc \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/iostream \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/__assert \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/__config \

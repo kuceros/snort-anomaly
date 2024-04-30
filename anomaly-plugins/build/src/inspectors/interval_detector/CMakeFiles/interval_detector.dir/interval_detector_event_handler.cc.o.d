@@ -1,6 +1,6 @@
 src/inspectors/interval_detector/CMakeFiles/interval_detector.dir/interval_detector_event_handler.cc.o: \
-  /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/src/inspectors/interval_detector/interval_detector_event_handler.cc \
-  /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/src/inspectors/interval_detector/interval_detector_event_handler.h \
+  /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/src/inspectors/interval_detector/interval_detector_event_handler.cc \
+  /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/src/inspectors/interval_detector/interval_detector_event_handler.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/sstream \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/__assert \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/__config \
@@ -926,7 +926,7 @@ src/inspectors/interval_detector/CMakeFiles/interval_detector.dir/interval_detec
   /usr/local/Cellar/snort/3.1.84.0/include/snort/network_inspectors/appid/application_ids.h \
   /usr/local/Cellar/snort/3.1.84.0/include/snort/pub_sub/appid_events.h \
   /usr/local/Cellar/snort/3.1.84.0/include/snort/pub_sub/appid_event_ids.h \
-  /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/src/inspectors/interval_detector/interval_detector.h \
+  /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/src/inspectors/interval_detector/interval_detector.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/fstream \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/filesystem \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/__filesystem/copy_options.h \

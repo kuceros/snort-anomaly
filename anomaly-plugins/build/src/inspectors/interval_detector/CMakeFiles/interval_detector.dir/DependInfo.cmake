@@ -8,8 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/src/inspectors/interval_detector/interval_detector.cc" "src/inspectors/interval_detector/CMakeFiles/interval_detector.dir/interval_detector.cc.o" "gcc" "src/inspectors/interval_detector/CMakeFiles/interval_detector.dir/interval_detector.cc.o.d"
-  "/Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/src/inspectors/interval_detector/interval_detector_event_handler.cc" "src/inspectors/interval_detector/CMakeFiles/interval_detector.dir/interval_detector_event_handler.cc.o" "gcc" "src/inspectors/interval_detector/CMakeFiles/interval_detector.dir/interval_detector_event_handler.cc.o.d"
+  "/Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/src/inspectors/interval_detector/interval_detector.cc" "src/inspectors/interval_detector/CMakeFiles/interval_detector.dir/interval_detector.cc.o" "gcc" "src/inspectors/interval_detector/CMakeFiles/interval_detector.dir/interval_detector.cc.o.d"
+  "/Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/src/inspectors/interval_detector/interval_detector_event_handler.cc" "src/inspectors/interval_detector/CMakeFiles/interval_detector.dir/interval_detector_event_handler.cc.o" "gcc" "src/inspectors/interval_detector/CMakeFiles/interval_detector.dir/interval_detector_event_handler.cc.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

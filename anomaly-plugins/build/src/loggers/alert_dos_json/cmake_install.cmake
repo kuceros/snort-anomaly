@@ -1,4 +1,4 @@
-# Install script for directory: /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/src/loggers/alert_dos_json
+# Install script for directory: /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/src/loggers/alert_dos_json
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -38,7 +38,7 @@ if(NOT DEFINED CMAKE_OBJDUMP)
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/snort/plugins/extra/loggers" TYPE MODULE FILES "/Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build/src/loggers/alert_dos_json/alert_dos_json.so")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/snort/plugins/extra/loggers" TYPE MODULE FILES "/Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build/src/loggers/alert_dos_json/alert_dos_json.so")
   if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/snort/plugins/extra/loggers/alert_dos_json.so" AND
      NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/snort/plugins/extra/loggers/alert_dos_json.so")
     if(CMAKE_INSTALL_DO_STRIP)

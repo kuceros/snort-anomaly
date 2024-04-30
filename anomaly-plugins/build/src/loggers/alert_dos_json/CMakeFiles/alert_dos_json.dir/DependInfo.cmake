@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/src/loggers/alert_dos_json/alert_dos_json.cc" "src/loggers/alert_dos_json/CMakeFiles/alert_dos_json.dir/alert_dos_json.cc.o" "gcc" "src/loggers/alert_dos_json/CMakeFiles/alert_dos_json.dir/alert_dos_json.cc.o.d"
+  "/Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/src/loggers/alert_dos_json/alert_dos_json.cc" "src/loggers/alert_dos_json/CMakeFiles/alert_dos_json.dir/alert_dos_json.cc.o" "gcc" "src/loggers/alert_dos_json/CMakeFiles/alert_dos_json.dir/alert_dos_json.cc.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

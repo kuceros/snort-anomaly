@@ -49,8 +49,8 @@ static const char* s_help = "log selected published data to interval_detector.lo
 
 static const Parameter s_params[] =
 {
-    { "json_logging", Parameter::PT_BOOL, nullptr, "false",
-        "log appid data in json format" },
+    { "label_logging", Parameter::PT_BOOL, nullptr, "false",
+        "log labeled flows for training ML" },
     { "file", Parameter::PT_STRING, nullptr, nullptr,
         "output data to given file" },
     { "training", Parameter::PT_BOOL, nullptr, nullptr,
@@ -102,8 +102,8 @@ public:
 
     bool set(const char*, Value& v, SnortConfig*) override
     {
-        if ( v.is("json_logging") )
-            config->json_logging = v.get_bool();
+        if ( v.is("label_logging") )
+            config->label_logging = v.get_bool();
         else if ( v.is("file") )
             config->file_name = v.get_string();
         else if ( v.is("training") )
@@ -176,7 +176,7 @@ public:
             return false;
         }
         sc->set_run_flags(RUN_FLAG__TRACK_ON_SYN);
-        if (!config->file_name.empty())
+        if (!config->file_name.empty() and config->label_logging)
         {
             config->file_stream.open(config->file_name, std::ios::app);
             if (!config->file_stream.is_open())

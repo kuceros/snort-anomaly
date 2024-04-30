@@ -590,7 +590,7 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
             if(!srcVec.empty() or !dstVec.empty())
             {
                 js.open();
-                js.put("detection": "FlowInterval");
+                js.put("detection", "FlowInterval");
                 js.put("start_time", convertSecondsToDateTime(inter_start));
                 js.put("end_time", convertSecondsToDateTime(p->pkth->ts.tv_sec));
             }
@@ -794,7 +794,7 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
             std::ostringstream ss;
             JsonStream js(ss);
             js.open();
-            js.put("detection": "FlowML");
+            js.put("detection", "FlowML");
             js.put("timestamp", convertSecondsToDateTime(p->pkth->ts.tv_sec));
             if(p->is_ip())
                 js.put("proto", get_proto_str(p->flow->ip_proto));

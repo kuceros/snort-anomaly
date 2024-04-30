@@ -1,6 +1,6 @@
 src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/flow_ml.cc.o: \
-  /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/src/inspectors/flow_ml/flow_ml.cc \
-  /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/src/inspectors/flow_ml/flow_ml.h \
+  /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/src/inspectors/flow_ml/flow_ml.cc \
+  /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/src/inspectors/flow_ml/flow_ml.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/fstream \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/__algorithm/max.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/__algorithm/comp.h \
@@ -989,7 +989,7 @@ src/inspectors/flow_ml/CMakeFiles/flow_ml.dir/flow_ml.cc.o: \
   /usr/local/Cellar/snort/3.1.84.0/include/snort/pub_sub/intrinsic_event_ids.h \
   /usr/local/Cellar/snort/3.1.84.0/include/snort/detection/signature.h \
   /usr/local/Cellar/snort/3.1.84.0/include/snort/detection/rules.h \
-  /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/src/inspectors/flow_ml/flow_ml_event_handler.h \
+  /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/src/inspectors/flow_ml/flow_ml_event_handler.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/thread \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/__thread/formatter.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/__thread/this_thread.h \

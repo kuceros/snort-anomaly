@@ -1,4 +1,4 @@
-# Install script for directory: /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/src
+# Install script for directory: /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,14 +39,8 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build/src/codecs/cmake_install.cmake")
-  include("/Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build/src/daqs/cmake_install.cmake")
-  include("/Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build/src/inspectors/cmake_install.cmake")
-  include("/Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build/src/ips_options/cmake_install.cmake")
-  include("/Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build/src/loggers/cmake_install.cmake")
-  include("/Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build/src/search_engines/cmake_install.cmake")
-  include("/Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build/src/so_rules/cmake_install.cmake")
-  include("/Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build/src/tp_appid/cmake_install.cmake")
+  include("/Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build/src/inspectors/cmake_install.cmake")
+  include("/Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build/src/loggers/cmake_install.cmake")
 
 endif()
 

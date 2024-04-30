@@ -361,12 +361,12 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
 
     if (!flow)
     {
-        if (!config.json_logging)
-            WarningMessage("appid_listener: flow is null\n");
+        if (!config.label_logging)
+            WarningMessage("interval_detector: flow is null\n");
         return;
     }
 
-    if (!config.json_logging and !appid_changed(ac_bits))
+    if (!config.label_logging and !appid_changed(ac_bits))
         return;
 
     char cli_ip_str[INET6_ADDRSTRLEN], srv_ip_str[INET6_ADDRSTRLEN];
@@ -496,8 +496,12 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                 // Print the flow info
                 std::ostringstream ss;
                 ss << static_cast<unsigned>(it->proto) << ", " << it->ints[0] << ", " << it->ints[1] << ", " << it->ints[2] << ", " << it->ints[3] << ", 1"<< endl;
-                if (!write_to_file(ss.str())) {
-                    LogMessage("%s", ss.str().c_str());
+                
+                if(config.label_logging)
+                {   
+                    if (!write_to_file(ss.str())) {
+                        LogMessage("%s", ss.str().c_str());
+                    }
                 }
                 // Erase the flow from the vector
                 it = IntervalFlows.erase(it);
@@ -508,8 +512,11 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                 std::ostringstream ss;
                 
                 ss << static_cast<unsigned>(it->proto) << ", " << it->ints[0] << ", " << it->ints[1] << ", " << it->ints[2] << ", " << it->ints[3] << ", 1"<< endl;
-                if (!write_to_file(ss.str())) {
-                    LogMessage("%s", ss.str().c_str());
+                if(config.label_logging)
+                {   
+                    if (!write_to_file(ss.str())) {
+                        LogMessage("%s", ss.str().c_str());
+                    }
                 }
                 // Erase the flow from the vector
                 it = IntervalFlows.erase(it);
@@ -517,8 +524,11 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                 // Move to the next flow if it doesn't match any attack IP
                 std::ostringstream ss;
                 ss << static_cast<unsigned>(it->proto) << ", " << it->ints[0] << ", " << it->ints[1] << ", " << it->ints[2] << ", " << it->ints[3] << ", 0"<< endl;
-                if (!write_to_file(ss.str())) {
-                    LogMessage("%s", ss.str().c_str());
+                if(config.label_logging)
+                {   
+                    if (!write_to_file(ss.str())) {
+                        LogMessage("%s", ss.str().c_str());
+                    }
                 }
                 it = IntervalFlows.erase(it);
             }
@@ -836,33 +846,6 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
     else if(p->is_icmp())
         proto = PROTO_ICMP;
 
-    IntervalFlows.push_back({src_name, dst_name, proto, {src_bytes, src_pkts, dst_bytes, dst_pkts}});
-}
-
-void IntervalDetectorEventHandler::print_message(const char* cli_ip_str, const char* srv_ip_str,
-    const Flow& flow, PegCount packet_num, AppId service, AppId client, AppId payload, AppId misc,
-    AppId referred)
-{
-    print_header(cli_ip_str, srv_ip_str, flow.client_port, flow.server_port, flow.ip_proto,
-        packet_num);
-
-    ostringstream ss;
-    ss << " service: " << service << " client: " << client << " payload: " <<
-        payload << " misc: " << misc << " referred: " << referred << endl;
-
-    if (!write_to_file(ss.str()))
-        LogMessage("%s", ss.str().c_str());
-}
-
-void IntervalDetectorEventHandler::print_json_message(JsonStream& js, const char* cli_ip_str, uint32_t asn,
-    const char* srv_ip_str, const Flow& flow, PegCount packet_num, const AppIdSessionApi& api,
-    AppId service, AppId client, AppId payload, AppId misc, AppId referred,
-    bool is_httpx, uint32_t httpx_stream_index, const Packet* p, const char* netbios_name,
-    const char* netbios_domain)
-{
-    assert(p);
-    
-
-    js.close();
-    js.close();
+    if(config.label_logging)
+        IntervalFlows.push_back({src_name, dst_name, proto, {src_bytes, src_pkts, dst_bytes, dst_pkts}});
 }

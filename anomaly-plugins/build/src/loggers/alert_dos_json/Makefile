@@ -57,10 +57,10 @@ RM = /usr/local/Cellar/cmake/3.29.0/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82
+CMAKE_SOURCE_DIR = /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build
+CMAKE_BINARY_DIR = /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -68,7 +68,7 @@ CMAKE_BINARY_DIR = /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/buil
 # Special rule for the target package
 package: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Run CPack packaging tool..."
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && /usr/local/Cellar/cmake/3.29.0/bin/cpack --config ./CPackConfig.cmake
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && /usr/local/Cellar/cmake/3.29.0/bin/cpack --config ./CPackConfig.cmake
 .PHONY : package
 
 # Special rule for the target package
@@ -78,7 +78,7 @@ package/fast: package
 # Special rule for the target package_source
 package_source:
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Run CPack packaging tool for source..."
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && /usr/local/Cellar/cmake/3.29.0/bin/cpack --config ./CPackSourceConfig.cmake /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build/CPackSourceConfig.cmake
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && /usr/local/Cellar/cmake/3.29.0/bin/cpack --config ./CPackSourceConfig.cmake /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build/CPackSourceConfig.cmake
 .PHONY : package_source
 
 # Special rule for the target package_source
@@ -152,14 +152,14 @@ install/strip/fast: preinstall/fast
 
 # The main all target
 all: cmake_check_build_system
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && $(CMAKE_COMMAND) -E cmake_progress_start /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build/CMakeFiles /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build/src/loggers/alert_dos_json//CMakeFiles/progress.marks
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/loggers/alert_dos_json/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build/CMakeFiles 0
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && $(CMAKE_COMMAND) -E cmake_progress_start /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build/CMakeFiles /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build/src/loggers/alert_dos_json//CMakeFiles/progress.marks
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/loggers/alert_dos_json/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/loggers/alert_dos_json/clean
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/loggers/alert_dos_json/clean
 .PHONY : clean
 
 # The main clean target
@@ -168,22 +168,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/loggers/alert_dos_json/preinstall
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/loggers/alert_dos_json/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/loggers/alert_dos_json/preinstall
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/loggers/alert_dos_json/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 src/loggers/alert_dos_json/CMakeFiles/alert_dos_json.dir/rule:
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/loggers/alert_dos_json/CMakeFiles/alert_dos_json.dir/rule
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/loggers/alert_dos_json/CMakeFiles/alert_dos_json.dir/rule
 .PHONY : src/loggers/alert_dos_json/CMakeFiles/alert_dos_json.dir/rule
 
 # Convenience name for target.
@@ -192,7 +192,7 @@ alert_dos_json: src/loggers/alert_dos_json/CMakeFiles/alert_dos_json.dir/rule
 
 # fast build rule for target.
 alert_dos_json/fast:
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && $(MAKE) $(MAKESILENT) -f src/loggers/alert_dos_json/CMakeFiles/alert_dos_json.dir/build.make src/loggers/alert_dos_json/CMakeFiles/alert_dos_json.dir/build
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && $(MAKE) $(MAKESILENT) -f src/loggers/alert_dos_json/CMakeFiles/alert_dos_json.dir/build.make src/loggers/alert_dos_json/CMakeFiles/alert_dos_json.dir/build
 .PHONY : alert_dos_json/fast
 
 alert_dos_json.o: alert_dos_json.cc.o
@@ -200,7 +200,7 @@ alert_dos_json.o: alert_dos_json.cc.o
 
 # target to build an object file
 alert_dos_json.cc.o:
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && $(MAKE) $(MAKESILENT) -f src/loggers/alert_dos_json/CMakeFiles/alert_dos_json.dir/build.make src/loggers/alert_dos_json/CMakeFiles/alert_dos_json.dir/alert_dos_json.cc.o
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && $(MAKE) $(MAKESILENT) -f src/loggers/alert_dos_json/CMakeFiles/alert_dos_json.dir/build.make src/loggers/alert_dos_json/CMakeFiles/alert_dos_json.dir/alert_dos_json.cc.o
 .PHONY : alert_dos_json.cc.o
 
 alert_dos_json.i: alert_dos_json.cc.i
@@ -208,7 +208,7 @@ alert_dos_json.i: alert_dos_json.cc.i
 
 # target to preprocess a source file
 alert_dos_json.cc.i:
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && $(MAKE) $(MAKESILENT) -f src/loggers/alert_dos_json/CMakeFiles/alert_dos_json.dir/build.make src/loggers/alert_dos_json/CMakeFiles/alert_dos_json.dir/alert_dos_json.cc.i
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && $(MAKE) $(MAKESILENT) -f src/loggers/alert_dos_json/CMakeFiles/alert_dos_json.dir/build.make src/loggers/alert_dos_json/CMakeFiles/alert_dos_json.dir/alert_dos_json.cc.i
 .PHONY : alert_dos_json.cc.i
 
 alert_dos_json.s: alert_dos_json.cc.s
@@ -216,7 +216,7 @@ alert_dos_json.s: alert_dos_json.cc.s
 
 # target to generate assembly for a file
 alert_dos_json.cc.s:
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && $(MAKE) $(MAKESILENT) -f src/loggers/alert_dos_json/CMakeFiles/alert_dos_json.dir/build.make src/loggers/alert_dos_json/CMakeFiles/alert_dos_json.dir/alert_dos_json.cc.s
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && $(MAKE) $(MAKESILENT) -f src/loggers/alert_dos_json/CMakeFiles/alert_dos_json.dir/build.make src/loggers/alert_dos_json/CMakeFiles/alert_dos_json.dir/alert_dos_json.cc.s
 .PHONY : alert_dos_json.cc.s
 
 # Help Target
@@ -248,6 +248,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

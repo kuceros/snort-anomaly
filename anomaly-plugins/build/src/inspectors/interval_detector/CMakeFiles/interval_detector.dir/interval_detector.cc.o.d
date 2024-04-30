@@ -1,6 +1,6 @@
 src/inspectors/interval_detector/CMakeFiles/interval_detector.dir/interval_detector.cc.o: \
-  /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/src/inspectors/interval_detector/interval_detector.cc \
-  /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/src/inspectors/interval_detector/interval_detector.h \
+  /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/src/inspectors/interval_detector/interval_detector.cc \
+  /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/src/inspectors/interval_detector/interval_detector.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/fstream \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/__algorithm/max.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/__algorithm/comp.h \
@@ -993,7 +993,7 @@ src/inspectors/interval_detector/CMakeFiles/interval_detector.dir/interval_detec
   /usr/local/Cellar/snort/3.1.84.0/include/snort/pub_sub/intrinsic_event_ids.h \
   /usr/local/Cellar/snort/3.1.84.0/include/snort/detection/signature.h \
   /usr/local/Cellar/snort/3.1.84.0/include/snort/detection/rules.h \
-  /Users/kucera.rosta/Desktop/Materialy/DP/snort3-extra_82/src/inspectors/interval_detector/interval_detector_event_handler.h \
+  /Users/kucera.rosta/Desktop/snort-anomaly/anomaly-plugins/src/inspectors/interval_detector/interval_detector_event_handler.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/thread \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/__thread/formatter.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX14.4.sdk/usr/include/c++/v1/__thread/this_thread.h \
