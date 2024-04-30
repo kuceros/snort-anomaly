@@ -90,56 +90,40 @@ bool BinaryClassifier::build(std::string in)
 }
 
 bool BinaryClassifier::buildFlowModel(std::string model_path) {
-    // Reset the interpreter
     interpreter.reset();
 
-    // Set minimum log severity for TensorFlow Lite
     LoggerOptions::SetMinimumLogSeverity(TFLITE_LOG_ERROR);
 
-    // Load the model from the specified file
     model = tflite::FlatBufferModel::BuildFromFile(model_path.c_str());
     if (!model) {
-        // Failed to load the model, return false
         return false;
     }
 
-    // Create an interpreter builder and resolver
     tflite::ops::builtin::BuiltinOpResolver resolver;
     std::unique_ptr<tflite::Interpreter> temp_interpreter;
 
-    // Create the interpreter
     tflite::InterpreterBuilder builder(*model, resolver);
     if (builder(&temp_interpreter) != kTfLiteOk || !temp_interpreter) {
-        // Failed to create the interpreter, return false
         return false;
     }
 
-    // Ensure the model has exactly one input tensor and one output tensor
     if (temp_interpreter->inputs().size() != 1 || temp_interpreter->outputs().size() != 1) {
-        // Model does not have the expected number of inputs or outputs, return false
         return false;
     }
 
-    // Get input and output tensors
     const TfLiteTensor* input_tensor = temp_interpreter->input_tensor(0);
     const TfLiteTensor* output_tensor = temp_interpreter->output_tensor(0);
 
-    // Ensure input and output tensor types are float32
     if (input_tensor->type != kTfLiteFloat32 || output_tensor->type != kTfLiteFloat32) {
-        // Input or output tensor types are not float32, return false
         return false;
     }
 
-    // Allocate tensors for the interpreter
     if (temp_interpreter->AllocateTensors() != kTfLiteOk) {
-        // Failed to allocate tensors, return false
         return false;
     }
 
-    // Move the interpreter to the member variable
     interpreter = std::move(temp_interpreter);
 
-    // Model and interpreter were successfully initialized, return true
     return true;
 }
 
