@@ -356,7 +356,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
         return;
     }
 
-    if (!config.label_logging and !appid_changed(ac_bits))
+    if (!appid_changed(ac_bits))
         return;
 
     char cli_ip_str[INET6_ADDRSTRLEN], srv_ip_str[INET6_ADDRSTRLEN];
