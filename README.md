@@ -28,7 +28,6 @@
 ### Snort configuration example (snort.lua)
     interval_detector =
     {
-        label_logging = false, --logging labeled flow data for ML training
         file = 'data_labeled.csv', --output file with labeled data
         training = false, --training thresholds
         load_model = true, --load pretrained thresholds
@@ -37,7 +36,7 @@
         db = '<your_path>/GeoLite2-ASN/GeoLite2-ASN.mmdb', --ASN database
         win_size = 300, --training window if model not loaded
         interval_size = 30, --detection interval if model not loaded
-        num_sigma = 3, --multiple sigma as a threshold
+        num_sigma = 12, --multiple sigma as a threshold
     }
 
     flow_ml =
