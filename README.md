@@ -28,7 +28,7 @@
 ### Snort configuration example (snort.lua)
     interval_detector =
     {
-        file = 'data_labeled.csv', --output file with labeled data
+        file_labels = 'data_labeled.csv', --output file with labeled data
         training = false, --training thresholds
         load_model = true, --load pretrained thresholds
         training_time = 20000, --training time in seconds
