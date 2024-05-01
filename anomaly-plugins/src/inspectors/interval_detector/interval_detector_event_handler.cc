@@ -15,7 +15,8 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //--------------------------------------------------------------------------
-// appid_listener_event_handler.cc author Shravan Rangaraju <shrarang@cisco.com>
+// interval_detector_event_handler.cc author Rostislav Kucera <kucera.rosta@gmail.com>, 2024
+// based on appid_listener_event_handler.cc author Shravan Rangaraju <shrarang@cisco.com>
 
 #include "interval_detector_event_handler.h"
 
@@ -68,7 +69,6 @@ void saveModel(const std::map<std::string, GroupThreshold>& thresholds_map, int 
     }
 
     outfile.write(reinterpret_cast<const char*>(&interval), sizeof(int));
-    // Write the size of the map
     size_t map_size = thresholds_map.size();
     outfile.write(reinterpret_cast<const char*>(&map_size), sizeof(size_t));
 
@@ -105,7 +105,6 @@ std::pair<std::map<std::string, GroupThreshold>, int> loadModel(const std::strin
     double sum_src_count_thresh = 0.0;
 
     for (size_t i = 0; i < map_size; ++i) {
-        // Read the length of the key
         size_t key_size;
         infile.read(reinterpret_cast<char*>(&key_size), sizeof(size_t));
         if (infile.fail()) {
@@ -293,13 +292,10 @@ void CalcUCL(int window, int interval, int num_sigma){
 }
 
 std::string convertSecondsToDateTime(long seconds) {
-    // Convert seconds to time_t
     time_t timestamp = seconds;
 
-    // Convert timestamp to a struct tm
     struct tm* timeinfo = localtime(&timestamp);
 
-    // Format timeinfo as a string
     char buffer[80];
     strftime(buffer, 80, "%Y-%m-%d %H:%M:%S", timeinfo);
 
@@ -351,8 +347,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
 
     if (!flow)
     {
-        if (!config.label_logging)
-            WarningMessage("interval_detector: flow is null\n");
+        WarningMessage("interval_detector: flow is null\n");
         return;
     }
 
@@ -486,39 +481,25 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                 // Print the flow info
                 std::ostringstream ss;
                 ss << static_cast<unsigned>(it->proto) << ", " << it->ints[0] << ", " << it->ints[1] << ", " << it->ints[2] << ", " << it->ints[3] << ", 1"<< endl;
-                
-                if(config.label_logging)
-                {   
-                    if (!write_to_file(ss.str())) {
-                        LogMessage("%s", ss.str().c_str());
-                    }
+                if (!write_to_file(ss.str())) {
+                    LogMessage("%s", ss.str().c_str());
                 }
-                // Erase the flow from the vector
                 it = IntervalFlows.erase(it);
             }
-            // Check if dst_ip is in attack_dst_ips
             else if (std::find(attack_dst_ips.begin(), attack_dst_ips.end(), it->dst_ip) != attack_dst_ips.end()) {
-                // Print the flow info
+             
                 std::ostringstream ss;
                 
                 ss << static_cast<unsigned>(it->proto) << ", " << it->ints[0] << ", " << it->ints[1] << ", " << it->ints[2] << ", " << it->ints[3] << ", 1"<< endl;
-                if(config.label_logging)
-                {   
-                    if (!write_to_file(ss.str())) {
-                        LogMessage("%s", ss.str().c_str());
-                    }
+                if (!write_to_file(ss.str())) {
+                    LogMessage("%s", ss.str().c_str());
                 }
-                // Erase the flow from the vector
                 it = IntervalFlows.erase(it);
             } else {
-                // Move to the next flow if it doesn't match any attack IP
                 std::ostringstream ss;
                 ss << static_cast<unsigned>(it->proto) << ", " << it->ints[0] << ", " << it->ints[1] << ", " << it->ints[2] << ", " << it->ints[3] << ", 0"<< endl;
-                if(config.label_logging)
-                {   
-                    if (!write_to_file(ss.str())) {
-                        LogMessage("%s", ss.str().c_str());
-                    }
+                if (!write_to_file(ss.str())) {
+                    LogMessage("%s", ss.str().c_str());
                 }
                 it = IntervalFlows.erase(it);
             }
@@ -836,6 +817,6 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
     else if(p->is_icmp())
         proto = PROTO_ICMP;
 
-    if(config.label_logging)
+    if(!config.training)
         IntervalFlows.push_back({src_name, dst_name, proto, {src_bytes, src_pkts, dst_bytes, dst_pkts}});
 }

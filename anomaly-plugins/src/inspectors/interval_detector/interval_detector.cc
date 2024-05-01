@@ -15,7 +15,8 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //--------------------------------------------------------------------------
-// appid_listener.cc author Rajeshwari Adapalam <rajadapa@cisco.com>
+// interval_detector.cc author Rostislav Kucera <kucera.rosta@gmail.com>, 2024
+// based on appid_listener.cc author Rajeshwari Adapalam <rajadapa@cisco.com>
 
 #include "interval_detector.h"
 
@@ -49,10 +50,8 @@ static const char* s_help = "log selected published data to interval_detector.lo
 
 static const Parameter s_params[] =
 {
-    { "label_logging", Parameter::PT_BOOL, nullptr, "false",
-        "log labeled flows for training ML" },
-    { "file", Parameter::PT_STRING, nullptr, nullptr,
-        "output data to given file" },
+    { "file_labels", Parameter::PT_STRING, nullptr, nullptr,
+        "labeled flow data output file" },
     { "training", Parameter::PT_BOOL, nullptr, nullptr,
         "training detection model" },
     { "training_time", Parameter::PT_INT, nullptr, nullptr,
@@ -102,9 +101,7 @@ public:
 
     bool set(const char*, Value& v, SnortConfig*) override
     {
-        if ( v.is("label_logging") )
-            config->label_logging = v.get_bool();
-        else if ( v.is("file") )
+        if ( v.is("file_labels") )
             config->file_name = v.get_string();
         else if ( v.is("training") )
             config->training = v.get_bool();
@@ -176,7 +173,7 @@ public:
             return false;
         }
         sc->set_run_flags(RUN_FLAG__TRACK_ON_SYN);
-        if (!config->file_name.empty() and config->label_logging)
+        if (!config->file_name.empty())
         {
             config->file_stream.open(config->file_name, std::ios::app);
             if (!config->file_stream.is_open())

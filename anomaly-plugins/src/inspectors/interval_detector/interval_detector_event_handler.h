@@ -15,7 +15,8 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //--------------------------------------------------------------------------
-// appid_listener_event_handler.h author Shravan Rangaraju <shrarang@cisco.com>
+// interval_detector_event_handler.cc author Rostislav Kucera <kucera.rosta@gmail.com>, 2024
+// based on appid_listener_event_handler.cc author Shravan Rangaraju <shrarang@cisco.com>
 
 #ifndef INTERVAL_DETECTOR_EVENT_HANDLER_H
 #define INTERVAL_DETECTOR_EVENT_HANDLER_H
