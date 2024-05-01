@@ -26,7 +26,7 @@
 // whatever, look at this from Joel: https://github.com/jncornett/alert_json,
 // which is also more OO implemented.  should pull in that at some point.
 
-// modified alert_json.cc by Rostislav Kucera <kucera.rosta@gmail.com>, 2024
+// modified alert_dos_json.cc by Rostislav Kucera <kucera.rosta@gmail.com>, 2024
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -443,7 +443,7 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
 
     uint32_t asn_client = 0; // Default value
     uint32_t asn_server = 0;
-    if(event.sig_info->gid == 1 or event.sig_info->gid == 666 or event.sig_info->gid == 667)
+    if(event.sig_info->gid == 1 or event.sig_info->gid == 666 or event.sig_info->gid == 667 or event.sig_info->gid == 129)
     {
         if(db_status == MMDB_SUCCESS)
         {
@@ -859,6 +859,120 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
             }
         }
     }
+    if (event.sig_info->gid == 129 and interval)
+    {
+        bool found = false;
+        for (auto& it : default_ips)
+        {
+            string name = it.first;
+            std::vector<const snort::SfCidr*> ip_addresses = it.second;
+            for (auto& ip : ip_addresses)
+            {
+                int comp = ip->contains(&cli_ip);
+                if(comp == SFIP_CONTAINS and name!="EXTERNAL_NET")
+                {
+                    auto it = std::find_if(srcVec.begin(), srcVec.end(), [&](const IPEntry& entry) {
+                        return entry.ipAddress == name;
+                    });
+                    if (it != srcVec.end()) {
+                        // If the IP address is found, increment the count
+                        it->count++;
+                    } else {
+                        // If the IP address is not found, add a new entry to the vector
+                        srcVec.push_back({name, 1});
+                    }
+                    found = true;
+                    break;
+                }
+            }
+        }
+        if(!found)
+        {
+            if(asn_client>0)
+            {
+                auto it = std::find_if(srcVec.begin(), srcVec.end(), [&](const IPEntry& entry) {
+                    return entry.ipAddress == to_string(asn_client);
+                });
+                if (it != srcVec.end()) {
+                    // If the IP address is found, increment the count
+                    it->count++;
+                } else {
+                    // If the IP address is not found, add a new entry to the vector
+                    srcVec.push_back({to_string(asn_client), 1});
+                }
+            }
+            else
+            {
+                auto it = std::find_if(srcVec.begin(), srcVec.end(), [&](const IPEntry& entry) {
+                    return entry.ipAddress == cli_ip_str;
+                });
+                if (it != srcVec.end()) {
+                    // If the IP address is found, increment the count
+                    it->count++;
+                } else {
+                    // If the IP address is not found, add a new entry to the vector
+                    srcVec.push_back({cli_ip_str, 1});
+                }
+            }
+        }
+
+        found = false;
+        for (auto& it : default_ips)
+        {
+            string name = it.first;
+            std::vector<const snort::SfCidr*> ip_addresses = it.second;
+            for (auto& ip : ip_addresses)
+            {
+                int comp = ip->contains(&srv_ip);
+                if(comp == SFIP_CONTAINS and name!="EXTERNAL_NET")
+                {
+                    auto it = std::find_if(dstVec.begin(), dstVec.end(), [&](const IPEntry& entry) {
+                        return entry.ipAddress == name;
+                    });
+                    if (it != dstVec.end()) {
+                        // If the IP address is found, increment the count
+                        it->count++;
+                    } else {
+                        // If the IP address is not found, add a new entry to the vector
+                        dstVec.push_back({name, 1});
+                    }
+                    found = true;
+                    break;
+                }
+            }
+        }
+        if(!found)
+        {
+            if(asn_server>0)
+            {
+                auto it = std::find_if(dstVec.begin(), dstVec.end(), [&](const IPEntry& entry) {
+                    return entry.ipAddress == to_string(asn_server);
+                });
+                if (it != dstVec.end()) {
+                    // If the IP address is found, increment the count
+                    it->count++;
+                } else {
+                    // If the IP address is not found, add a new entry to the vector
+                    dstVec.push_back({to_string(asn_server), 1});
+                }
+            }
+            else
+            {
+                auto it = std::find_if(dstVec.begin(), dstVec.end(), [&](const IPEntry& entry) {
+                    return entry.ipAddress == srv_ip_str;
+                });
+                if (it != dstVec.end()) {
+                    // If the IP address is found, increment the count
+                    it->count++;
+                } else {
+                    // If the IP address is not found, add a new entry to the vector
+                    dstVec.push_back({srv_ip_str, 1});
+                }
+            }
+        }
+        
+    }
+    
 }
 
 
