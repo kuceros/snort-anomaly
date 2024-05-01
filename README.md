@@ -41,17 +41,17 @@
 
     flow_ml =
     {
-        model = '/Users/kucera.rosta/Desktop/snort.model', --load ML model
+        model = '<your_path>/Desktop/snort.model', --load ML model
         threshold = 0.99, --classification threshold
-        scaler_file = '/Users/kucera.rosta/Desktop/scaler_info.bin', --file with data for incoming data normalization
+        scaler_file = '<your_path>/scaler_info.bin', --file with data for incoming data normalization
     }
 
     alert_dos_json = { 
         file = true, --logging to file
         flow_ml = true, --logging FlowML alerts
         interval = true, --logging interval detector alerts
-        mapping = "/Users/kucera.rosta/Desktop/temp/SnortRules-main/rules_parsed.csv", --rule-Mitre mapping file
-        db = '/Users/kucera.rosta/Desktop/Materialy/DP/GeoLite2-ASN/GeoLite2-ASN.mmdb' --ASN database
+        mapping = "<your_path>/rules_parsed.csv", --rule-Mitre mapping file
+        db = '<your_path>/GeoLite2-ASN/GeoLite2-ASN.mmdb' --ASN database
     }
 
 
