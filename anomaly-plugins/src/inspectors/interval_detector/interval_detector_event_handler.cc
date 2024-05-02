@@ -53,6 +53,11 @@ std::vector<FlowInfo> IntervalFlows;
 std::vector<std::string> attack_src_ips;
 std::vector<std::string> attack_dst_ips;
 
+int counter = 0;
+
+bool model_saved = false;
+bool interval_saved = false;
+
 std::vector<float> minMaxScaling(const std::vector<float>& data, const std::vector<float>& minVals, const std::vector<float>& maxVals) {
     std::vector<float> scaledData(data.size());
     for (size_t i = 0; i < data.size(); ++i) {
@@ -61,7 +66,7 @@ std::vector<float> minMaxScaling(const std::vector<float>& data, const std::vect
     return scaledData;
 }
 
-void saveModel(const std::map<std::string, GroupThreshold>& thresholds_map, int interval, const std::string& filename) {
+void saveModel(std::map<std::string, GroupThreshold>& thresholds_map, int interval, const std::string& filename) {
     std::ofstream outfile(filename, std::ios::binary);
     if (!outfile.is_open()) {
         std::cerr << "Error opening file: " << filename << std::endl;
@@ -79,7 +84,7 @@ void saveModel(const std::map<std::string, GroupThreshold>& thresholds_map, int 
 
         outfile.write(reinterpret_cast<const char*>(&pair.second), sizeof(GroupThreshold));
     }
-
+    thresholds_map.clear();
     outfile.close();
 }
 
@@ -153,21 +158,24 @@ float minMaxNormalize(int value, int max_val) {
 }
 
 void CalcUCL(int window, int interval, int num_sigma){
-    uint64_t sum_src_count = 0;
-    uint64_t sum_dst_count = 0;
-    uint64_t sum_src_bytes = 0;
-    uint64_t sum_src_packets = 0;
-    uint64_t sum_dst_bytes = 0;
-    uint64_t sum_dst_packets = 0;
-    uint64_t avg_src_bytes = 0;
-    uint64_t avg_src_packets = 0;
-    uint64_t avg_dst_bytes = 0;
-    uint64_t avg_dst_packets = 0;
-    uint64_t avg_src_count = 0;
-    uint64_t avg_dst_count = 0;
 
     for (auto& it : stats_map)
     {
+        uint64_t sum_src_count = 0;
+        uint64_t sum_dst_count = 0;
+        uint64_t sum_src_bytes = 0;
+        uint64_t sum_src_packets = 0;
+        uint64_t sum_dst_bytes = 0;
+        uint64_t sum_dst_packets = 0;
+        uint64_t avg_src_bytes = 0;
+        uint64_t avg_src_packets = 0;
+        uint64_t avg_dst_bytes = 0;
+        uint64_t avg_dst_packets = 0;
+        uint64_t avg_src_count = 0;
+        uint64_t avg_dst_count = 0;
+
+        int counter = 0;
+
         string name = it.first;
         GroupStats stats = it.second;
 
@@ -178,6 +186,15 @@ void CalcUCL(int window, int interval, int num_sigma){
         stats_map[name].dst_count_per_inter.push_back(stats_map[name].dst_count);
         stats_map[name].src_count_per_inter.push_back(stats_map[name].src_count);
         //interval_start_time += interval;
+        /*cout<<"name: "<<name<<endl;
+        cout<<"src_pkts: "<<stats_map[name].src_pkts<<endl;
+        cout<<"src_bytes: "<<stats_map[name].src_bytes<<endl;
+        cout<<"dst_pkts: "<<stats_map[name].dst_pkts<<endl;
+        cout<<"dst_bytes: "<<stats_map[name].dst_bytes<<endl;
+        cout<<"dst_count: "<<stats_map[name].dst_count<<endl;
+        cout<<"src_count: "<<stats_map[name].src_count<<endl;
+        cout<<endl;*/
+
         stats_map[name].src_pkts = 0;
         stats_map[name].src_bytes = 0;
         stats_map[name].dst_pkts = 0;
@@ -185,8 +202,10 @@ void CalcUCL(int window, int interval, int num_sigma){
         stats_map[name].dst_count = 0;
         stats_map[name].src_count = 0;
 
+
         for (auto& iter : stats.src_bytes_per_inter)
         {
+            counter++;
             sum_src_bytes += iter;
         }
 
@@ -214,13 +233,14 @@ void CalcUCL(int window, int interval, int num_sigma){
         {
             sum_src_count += iter;
         }
+        
 
-        avg_src_bytes = sum_src_bytes / (window / interval); 
-        avg_src_packets = sum_src_packets / (window / interval);
-        avg_dst_bytes = sum_dst_bytes / (window / interval);
-        avg_dst_packets = sum_dst_packets / (window / interval);
-        avg_dst_count = sum_dst_count / (window / interval);
-        avg_src_count = sum_src_count / (window / interval);
+        avg_src_bytes = sum_src_bytes / (counter); 
+        avg_src_packets = sum_src_packets / counter;
+        avg_dst_bytes = sum_dst_bytes / counter;
+        avg_dst_packets = sum_dst_packets / counter;
+        avg_dst_count = sum_dst_count / counter;
+        avg_src_count = sum_src_count /counter;
 
         double dev_src_bytes = 0;
         double dev_src_packets = 0;
@@ -265,17 +285,17 @@ void CalcUCL(int window, int interval, int num_sigma){
         
         }
 
-        double varc_src_bytes = dev_src_bytes/(window /interval); //variance
+        double varc_src_bytes = dev_src_bytes/counter; //variance
         double std_dev_src_bytes = sqrt(varc_src_bytes); //standard deviation
-        double varc_src_packets = dev_src_packets/(window /interval); //variance
+        double varc_src_packets = dev_src_packets/counter; //variance
         double std_dev_src_packets = sqrt(varc_src_packets); //standard deviation
-        double varc_dst_bytes = dev_dst_bytes/(window /interval); //variance
+        double varc_dst_bytes = dev_dst_bytes/counter; //variance
         double std_dev_dst_bytes = sqrt(varc_dst_bytes); //standard deviation
-        double varc_dst_packets = dev_dst_packets/(window /interval); //variance
+        double varc_dst_packets = dev_dst_packets/counter; //variance
         double std_dev_dst_packets = sqrt(varc_dst_packets); //standard deviation
-        double varc_dst_count = dev_dst_count/(window /interval); //variance
+        double varc_dst_count = dev_dst_count/counter; //variance
         double std_dev_dst_count = sqrt(varc_dst_count); //standard deviation
-        double varc_src_count = dev_src_count/(window /interval); //variance
+        double varc_src_count = dev_src_count/counter; //variance
         double std_dev_src_count = sqrt(varc_src_count); //standard deviation
 
         thresholds_map[name].src_pkt_thresh = avg_src_packets + num_sigma * std_dev_src_packets;
@@ -284,7 +304,6 @@ void CalcUCL(int window, int interval, int num_sigma){
         thresholds_map[name].dst_bytes_thresh = avg_dst_bytes + num_sigma * std_dev_dst_bytes;
         thresholds_map[name].dst_count_thresh = avg_dst_count + num_sigma * std_dev_dst_count;
         thresholds_map[name].src_count_thresh = avg_src_count + num_sigma * std_dev_src_count;
-
     }
 
     stats_map.clear();
@@ -328,7 +347,6 @@ bool checkGroupThresh(const std::map<std::string, GroupThreshold>& thresholds_ma
 void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
 {
     AppidEvent& appid_event = static_cast<AppidEvent&>(event);
-    const AppidChangeBits& ac_bits = appid_event.get_change_bitset();
 
     const Packet *p = appid_event.get_packet();
     string src_name;
@@ -339,20 +357,12 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
     int dst_bytes = 0;
     int dst_pkts = 0;
 
-    AppidChangeBits temp_ac_bits = ac_bits;
-    temp_ac_bits.reset(APPID_CREATED_BIT);
-    temp_ac_bits.reset(APPID_DISCOVERY_FINISHED_BIT);
-    if (temp_ac_bits.none())
-        return;
-
     if (!flow)
     {
         WarningMessage("interval_detector: flow is null\n");
         return;
     }
 
-    if (!appid_changed(ac_bits))
-        return;
 
     char cli_ip_str[INET6_ADDRSTRLEN], srv_ip_str[INET6_ADDRSTRLEN];
     flow->client_ip.ntop(cli_ip_str, sizeof(cli_ip_str));
@@ -390,26 +400,27 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
 
     if(config.training)
     {
+        stats_mutex.lock();
         if(train_end_time == 0)
         {
-            stats_mutex.lock();
             train_end_time = p->pkth->ts.tv_sec + config.window;
-            stats_mutex.unlock();
         }
-        if(p->pkth->ts.tv_sec > train_end_time)
+
+        if(p->pkth->ts.tv_sec > train_end_time and !model_saved)
         {
-            stats_mutex.lock();
             CalcUCL(config.window, config.interval, config.num_sigma);
             saveModel(thresholds_map, config.interval, config.model);
+            model_saved = true;
             stats_mutex.unlock();
             return;
         }
+        stats_mutex.unlock();
     }
 
+    stats_mutex.lock();
     if(window_start_time == 0)
     {
-        stats_mutex.lock();
-        if(config.load_model)
+        if(config.load_model and !config.training)
         {
             try
             {
@@ -422,29 +433,23 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
         }
         window_start_time = p->pkth->ts.tv_sec;
         interval_start_time = window_start_time;
-        stats_mutex.unlock();
         DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_INTERVAL);
-       
-
     }
     else if(window_start_time+config.window < p->pkth->ts.tv_sec)
     {
-        stats_mutex.lock();
         window_start_time += config.window;
         interval_start_time = window_start_time;
-        if(!config.load_model)
+        if(!config.load_model and !config.training)
         {
             CalcUCL(config.window, config.interval, config.num_sigma);
         }
-        else
-        {
             stats_map.clear();
-        }
-        stats_mutex.unlock();
 
         DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_INTERVAL);    
     }
+    stats_mutex.unlock();
 
+    stats_mutex.lock();
     if(interval_start_time+config.interval < p->pkth->ts.tv_sec)
     {
         for (auto& it : stats_map)
@@ -453,24 +458,24 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
             GroupStats stats = it.second;
             GroupThreshold threshold = thresholds_map[name];
 
-            stats_mutex.lock();
-            stats_map[name].src_pkts_per_inter.push_back(stats_map[name].src_pkts);
-            stats_map[name].src_bytes_per_inter.push_back(stats_map[name].src_bytes);
-            stats_map[name].dst_pkts_per_inter.push_back(stats_map[name].dst_pkts);
-            stats_map[name].dst_bytes_per_inter.push_back(stats_map[name].dst_bytes);
-            stats_map[name].dst_count_per_inter.push_back(stats_map[name].dst_count);
-            stats_map[name].src_count_per_inter.push_back(stats_map[name].src_count);
-            stats_mutex.unlock();
+            if(!config.load_model)
+            {
+                stats_map[name].src_pkts_per_inter.push_back(stats_map[name].src_pkts);
+                stats_map[name].src_bytes_per_inter.push_back(stats_map[name].src_bytes);
+                stats_map[name].dst_pkts_per_inter.push_back(stats_map[name].dst_pkts);
+                stats_map[name].dst_bytes_per_inter.push_back(stats_map[name].dst_bytes);
+                stats_map[name].dst_count_per_inter.push_back(stats_map[name].dst_count);
+                stats_map[name].src_count_per_inter.push_back(stats_map[name].src_count);
+            }
 
-            stats_mutex.lock();
             stats_map[name].src_pkts = 0;
             stats_map[name].src_bytes = 0;
             stats_map[name].dst_pkts = 0;
             stats_map[name].dst_bytes = 0;
             stats_map[name].dst_count = 0;
             stats_map[name].src_count = 0;
-            stats_mutex.unlock();
         }
+        
         DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_INTERVAL); 
 
         for (auto it = IntervalFlows.begin(); it != IntervalFlows.end(); ) 
@@ -508,11 +513,11 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
         attack_src_ips.clear();
         IntervalFlows.clear();
         
-        stats_mutex.lock();
         IntervalFlows.clear();
         interval_start_time +=config.interval;
-        stats_mutex.unlock();
     }
+    stats_mutex.unlock();
+
     bool found = false;
     for (auto& it : config.default_ips)
     {
@@ -528,10 +533,10 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                 {
                     interval_start_time = window_start_time;
                 }  
+                stats_mutex.unlock();
                 stats_map[name].src_pkts += flow->flowstats.client_pkts;
                 stats_map[name].src_bytes += flow->flowstats.client_bytes;
                 stats_map[name].src_count++;
-                stats_mutex.unlock();
 
                 src_bytes = flow->flowstats.client_bytes;
                 src_pkts = flow->flowstats.client_pkts;
@@ -548,6 +553,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                         if (it == attack_src_ips.end()) {
                             attack_src_ips.push_back(name);
                         }
+                        //cout<<"attack_src: "<<name << " " << stats_map[name].src_bytes << " " << threshold.src_bytes_thresh << " " << stats_map[name].src_pkts << " " << threshold.src_pkt_thresh << " " << stats_map[name].src_count << " " << threshold.src_count_thresh << endl;
                         DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_FROM);
                     }
                 }
@@ -561,6 +567,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                         if (it == attack_src_ips.end()) {
                             attack_src_ips.push_back(name);
                         }
+                        //cout<<"attack_src: "<<name << " " << stats_map[name].src_bytes << " " << threshold.src_bytes_thresh << " " << stats_map[name].src_pkts << " " << threshold.src_pkt_thresh << " " << stats_map[name].src_count << " " << threshold.src_count_thresh << endl;
                         DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_FROM);
                     }
                 }
@@ -573,12 +580,10 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
     {
          if(asn_client>0)
         {
-            stats_mutex.lock();
             stats_map[to_string(asn_client)].src_pkts += flow->flowstats.client_pkts;
             stats_map[to_string(asn_client)].src_bytes += flow->flowstats.client_bytes;
             stats_map[to_string(asn_client)].src_count++;
 
-            stats_mutex.unlock();
 
             src_bytes = flow->flowstats.client_bytes;
             src_pkts = flow->flowstats.client_pkts;
@@ -595,6 +600,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                     if (it == attack_src_ips.end()) {
                         attack_src_ips.push_back(to_string(asn_client));
                     }
+                    //cout<<"attack_src: "<<to_string(asn_client) << " " << stats_map[to_string(asn_client)].src_bytes << " " << threshold.src_bytes_thresh << " " << stats_map[to_string(asn_client)].src_pkts << " " << threshold.src_pkt_thresh << " " << stats_map[to_string(asn_client)].src_count << " " << threshold.src_count_thresh << endl;
                     DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_FROM);
                 }
             }
@@ -609,17 +615,16 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                     if (it == attack_src_ips.end()) {
                         attack_src_ips.push_back(to_string(asn_client));
                     }
+                    //cout<<"attack_src: "<<to_string(asn_client) << " " << stats_map[to_string(asn_client)].src_bytes << " " << threshold.src_bytes_thresh << " " << stats_map[to_string(asn_client)].src_pkts << " " << threshold.src_pkt_thresh << " " << stats_map[to_string(asn_client)].src_count << " " << threshold.src_count_thresh << endl;
                     DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_FROM);
                 }
             }
         }
         else
         {
-            stats_mutex.lock();
             stats_map[cli_ip_str].src_pkts += flow->flowstats.client_pkts;
             stats_map[cli_ip_str].src_bytes += flow->flowstats.client_bytes;
             stats_map[cli_ip_str].src_count++;
-            stats_mutex.unlock();
 
             src_bytes = flow->flowstats.client_bytes;
             src_pkts = flow->flowstats.client_pkts;
@@ -637,6 +642,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                     if (it == attack_src_ips.end()) {
                         attack_src_ips.push_back(cli_ip_str);
                     }
+                    //cout<<"attack_src: "<<cli_ip_str << " " << stats_map[cli_ip_str].src_bytes << " " << threshold.src_bytes_thresh << " " << stats_map[cli_ip_str].src_pkts << " " << threshold.src_pkt_thresh << " " << stats_map[cli_ip_str].src_count << " " << threshold.src_count_thresh << endl;
                     DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_FROM);
                 }
             }
@@ -651,6 +657,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                     if (it == attack_src_ips.end()) {
                         attack_src_ips.push_back(cli_ip_str);
                     }
+                    //cout<<"attack_src: "<<cli_ip_str << " " << stats_map[cli_ip_str].src_bytes << " " << threshold.src_bytes_thresh << " " << stats_map[cli_ip_str].src_pkts << " " << threshold.src_pkt_thresh << " " << stats_map[cli_ip_str].src_count << " " << threshold.src_count_thresh << endl;
                     DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_FROM);          
                 }
             }
@@ -667,16 +674,16 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
             int comp = ip->contains(&srv_ip);
             if(comp == SFIP_CONTAINS and name!="EXTERNAL_NET")
             {
-
                 stats_mutex.lock();
                 if(interval_start_time == 0)
                 {
                     interval_start_time = window_start_time;
                 }  
+
+                stats_mutex.unlock();
                 stats_map[name].dst_pkts += flow->flowstats.server_pkts;
                 stats_map[name].dst_bytes += flow->flowstats.server_bytes;
                 stats_map[name].dst_count++;
-                stats_mutex.unlock();
 
                 dst_bytes = flow->flowstats.server_bytes;
                 dst_pkts = flow->flowstats.server_pkts;
@@ -693,6 +700,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                         if (it == attack_dst_ips.end()) {
                             attack_dst_ips.push_back(name);
                         }
+                        //cout<<"attack_dst: "<<name << " " << stats_map[name].dst_bytes << " " << threshold.dst_bytes_thresh << " " << stats_map[name].dst_pkts << " " << threshold.dst_pkt_thresh << " " << stats_map[name].dst_count << " " << threshold.dst_count_thresh << endl;
                         DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_TO);
                     }
                 }
@@ -706,6 +714,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                         if (it == attack_dst_ips.end()) {
                             attack_dst_ips.push_back(name);
                         }
+                        //cout<<"attack_dst: "<<name << " " << stats_map[name].dst_bytes << " " << threshold.dst_bytes_thresh << " " << stats_map[name].dst_pkts << " " << threshold.dst_pkt_thresh << " " << stats_map[name].dst_count << " " << threshold.dst_count_thresh << endl;
                         DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_TO);
                     }
                 }
@@ -713,17 +722,15 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                 break;
             }
         }
+        
     }
     if (!found)
     { 
         if(asn_server>0)
         {
-            stats_mutex.lock();
             stats_map[to_string(asn_server)].dst_pkts += flow->flowstats.server_pkts;
             stats_map[to_string(asn_server)].dst_bytes += flow->flowstats.server_bytes;
             stats_map[to_string(asn_server)].dst_count++;
-
-            stats_mutex.unlock();
 
             dst_bytes = flow->flowstats.server_bytes;
             dst_pkts = flow->flowstats.server_pkts;
@@ -740,6 +747,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                     if (it == attack_dst_ips.end()) {
                         attack_dst_ips.push_back(to_string(asn_server));
                     }
+                    //cout<<"attack_dst: "<<to_string(asn_server) << " " << stats_map[to_string(asn_server)].dst_bytes << " " << threshold.dst_bytes_thresh << " " << stats_map[to_string(asn_server)].dst_pkts << " " << threshold.dst_pkt_thresh << " " << stats_map[to_string(asn_server)].dst_count << " " << threshold.dst_count_thresh << endl;
                     DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_TO);
                     //s_counts.anomalies++;
                 }
@@ -755,6 +763,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                     if (it == attack_dst_ips.end()) {
                         attack_dst_ips.push_back(to_string(asn_server));
                     }
+                    //cout<<"attack_dst: "<<to_string(asn_server) << " " << stats_map[to_string(asn_server)].dst_bytes << " " << threshold.dst_bytes_thresh << " " << stats_map[to_string(asn_server)].dst_pkts << " " << threshold.dst_pkt_thresh << " " << stats_map[to_string(asn_server)].dst_count << " " << threshold.dst_count_thresh << endl;
                     DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_TO);
                     //s_counts.anomalies++;
                 }
@@ -762,12 +771,9 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
         }
         else
         {
-            stats_mutex.lock();
             stats_map[srv_ip_str].dst_pkts += flow->flowstats.server_pkts;
             stats_map[srv_ip_str].dst_bytes += flow->flowstats.server_bytes;
             stats_map[srv_ip_str].dst_count++;
-
-            stats_mutex.unlock();
 
             dst_bytes = flow->flowstats.server_bytes;
             dst_pkts = flow->flowstats.server_pkts;
@@ -784,6 +790,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                     if (it == attack_dst_ips.end()) {
                         attack_dst_ips.push_back(srv_ip_str);
                     }
+                    //cout<<"attack_dst: "<<srv_ip_str << " " << stats_map[srv_ip_str].dst_bytes << " " << threshold.dst_bytes_thresh  << " " << stats_map[srv_ip_str].dst_pkts << " " << threshold.dst_pkt_thresh << " " << stats_map[srv_ip_str].dst_count << " " << threshold.dst_count_thresh << endl;
                     DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_TO);
                     //s_counts.anomalies++;
                 }
@@ -799,6 +806,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                     if (it == attack_dst_ips.end()) {
                         attack_dst_ips.push_back(srv_ip_str);
                     }
+                    //cout<<"attack_dst: "<<srv_ip_str << " " << stats_map[srv_ip_str].dst_bytes << " " << threshold.dst_bytes_thresh  << " " << stats_map[srv_ip_str].dst_pkts << " " << threshold.dst_pkt_thresh << " " << stats_map[srv_ip_str].dst_count << " " << threshold.dst_count_thresh << endl;
                     DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_TO);
                     //s_counts.anomalies++;
                 }

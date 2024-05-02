@@ -117,7 +117,10 @@ public:
         else if ( v.is("db") )
             config->db_name = v.get_string();
         else if ( v.is("win_size") )
-            config->window= v.get_uint32();
+        {
+            if(!config->training)
+                    config->window = v.get_uint32();
+        }
         else if ( v.is("interval_size") )
             config->interval = v.get_uint32();
         else if ( v.is("num_sigma") )
@@ -196,8 +199,9 @@ public:
             config->default_ips[name] = ip_addresses;
             it_var = it_var->next;
         }
+        
         DataBus::subscribe_network(appid_pub_key, AppIdEventIds::ANY_CHANGE, new IntervalDetectorEventHandler(*config));
-
+        //DataBus::subscribe_network(intrinsic_pub_key, IntrinsicEventIds::FLOW_STATE_SETUP, new FlowCounterEventHandler(*config));
         return true;
     }
     

@@ -15,7 +15,8 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //--------------------------------------------------------------------------
-// appid_listener.cc author Rajeshwari Adapalam <rajadapa@cisco.com>
+// flow_ml.cc author Rostislav Kucera <kucera.rosta@gmail.com>, 2024
+// based on appid_listener.cc author Rajeshwari Adapalam <rajadapa@cisco.com>
 
 #include "flow_ml.h"
 

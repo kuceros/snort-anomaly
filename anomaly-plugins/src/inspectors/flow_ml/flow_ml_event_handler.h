@@ -15,7 +15,8 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //--------------------------------------------------------------------------
-// appid_listener_event_handler.h author Shravan Rangaraju <shrarang@cisco.com>
+// flow_ml_event_handler.h author Rostislav Kucera <kucera.rosta@gmail.com>, 2024
+// based on appid_listener_event_handler.h author Shravan Rangaraju <shrarang@cisco.com>
 
 #ifndef FLOW_ML_EVENT_HANDLER_H
 #define FLOW_ML_EVENT_HANDLER_H

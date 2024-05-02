@@ -84,9 +84,8 @@ class IntervalDetectorEventHandler : public snort::DataHandler
 public:
     IntervalDetectorEventHandler(IntervalDetectorConfig& config) :
         DataHandler(MOD_NAME), config(config) { }
-
+    
     void handle(snort::DataEvent& event, snort::Flow* flow) override;
-
 private:
     IntervalDetectorConfig& config;
 

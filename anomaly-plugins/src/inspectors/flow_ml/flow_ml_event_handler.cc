@@ -15,7 +15,8 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //--------------------------------------------------------------------------
-// appid_listener_event_handler.cc author Shravan Rangaraju <shrarang@cisco.com>
+// flow_ml_event_handler.cc author Rostislav Kucera <kucera.rosta@gmail.com>, 2024
+// based on appid_listener_event_handler.cc author Shravan Rangaraju <shrarang@cisco.com>
 
 #include "flow_ml_event_handler.h"
 
@@ -112,20 +113,11 @@ void FlowMLEventHandler::handle(DataEvent& event, Flow* flow)
     int dst_bytes = 0;
     int dst_pkts = 0;
 
-    AppidChangeBits temp_ac_bits = ac_bits;
-    temp_ac_bits.reset(APPID_CREATED_BIT);
-    temp_ac_bits.reset(APPID_DISCOVERY_FINISHED_BIT);
-    if (temp_ac_bits.none())
-        return;
-
     if (!flow)
     {
         WarningMessage("flow_ml: flow is null\n");
         return;
     }
-
-    if (!appid_changed(ac_bits))
-        return;
 
     char cli_ip_str[INET6_ADDRSTRLEN], srv_ip_str[INET6_ADDRSTRLEN];
     flow->client_ip.ntop(cli_ip_str, sizeof(cli_ip_str));
