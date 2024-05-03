@@ -86,8 +86,28 @@ public:
         DataHandler(MOD_NAME), config(config) { }
     
     void handle(snort::DataEvent& event, snort::Flow* flow) override;
+
 private:
     IntervalDetectorConfig& config;
+
+
+    std::mutex stats_mutex;
+
+    uint32_t window_start_time = 0;
+    uint32_t interval_start_time = 0;
+    uint32_t train_end_time = 0;
+
+    std::map<std::string, GroupStats> stats_map;
+    std::map<std::string, GroupThreshold> thresholds_map;
+
+    std::vector<FlowInfo> IntervalFlows;
+    std::vector<std::string> attack_src_ips;
+    std::vector<std::string> attack_dst_ips;
+
+    int counter = 0;
+
+    bool model_saved = false;
+    bool interval_saved = false;
 
     bool appid_changed(const AppidChangeBits& ac_bits) const
     {
@@ -98,6 +118,16 @@ private:
 
         return false;
     }
+
+    std::vector<float> minMaxScaling(const std::vector<float>& data, const std::vector<float>& minVals, const std::vector<float>& maxVals);
+    void saveModel(std::map<std::string, GroupThreshold>& thresholds_map, int interval, const std::string& filename);
+    std::pair<std::map<std::string, GroupThreshold>, int> loadModel(const std::string& filename);
+    float minMaxNormalize(int value, int max_val);
+    void CalcUCL(int window, int interval, int num_sigma);
+    std::string convertSecondsToDateTime(long seconds);
+    bool stringContains(const std::string& mainStr, const std::string& subStr);
+    bool checkGroupThresh(const std::map<std::string, GroupThreshold>& thresholds_map, const std::string& name, const GroupStats& stats);
+
 
     std::string get_proto_str(uint8_t ip_proto) const
     {

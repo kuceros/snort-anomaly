@@ -56,6 +56,9 @@ public:
 
     void handle(snort::DataEvent& event, snort::Flow* flow) override;
 
+    std::vector<float> minMaxScaling(const std::vector<float>& data, const std::vector<float>& minVals, const std::vector<float>& maxVals);
+    ScalerInfo loadScalerInfo(const std::string& filename);
+
 private:
     FlowMLConfig& config;
 

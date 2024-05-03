@@ -1,3 +1,0 @@
-/usr/local/snort/lib/snort/plugins/extra/inspectors/interval_detector.so
-/usr/local/snort/lib/snort/plugins/extra/inspectors/flow_ml.so
-/usr/local/snort/lib/snort/plugins/extra/loggers/alert_dos_json.so

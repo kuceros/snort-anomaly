@@ -71,7 +71,7 @@ struct sfip_var_t
 
     /* The mode above will select whether to use the sfip_node_t linked list
      * or the IP routing table */
-//    sfrt rt;
+    //    sfrt rt;
 
     /* Linked list of IP variables for the variable table */
     sfip_var_t* next;

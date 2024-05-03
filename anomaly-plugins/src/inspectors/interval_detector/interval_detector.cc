@@ -40,7 +40,6 @@
 #include "pub_sub/intrinsic_event_ids.h"
 
 #include "detection/signature.h"
-//#include "sfip/sf_ipvar.h"
 
 #include "interval_detector_event_handler.h"
 

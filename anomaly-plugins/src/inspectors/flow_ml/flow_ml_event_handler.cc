@@ -39,7 +39,15 @@
 using namespace snort;
 using namespace std;
 
-std::vector<float> minMaxScaling(const std::vector<float>& data, const std::vector<float>& minVals, const std::vector<float>& maxVals) {
+/**
+ * @brief Loads scaler information from a file.
+ * 
+ * This function reads scaler information from a file with the given filename. The details of the scaler information and the file format are not provided in the code snippet.
+ * 
+ * @param filename The name of the file from which the scaler information will be loaded.
+ * @return ScalerInfo The loaded scaler information.
+ */
+std::vector<float> FlowMLEventHandler::minMaxScaling(const std::vector<float>& data, const std::vector<float>& minVals, const std::vector<float>& maxVals) {
     std::vector<float> scaledData(data.size());
     for (size_t i = 0; i < data.size(); ++i) {
         scaledData[i] = (data[i] - minVals[i]) / (maxVals[i] - minVals[i]);
@@ -47,7 +55,15 @@ std::vector<float> minMaxScaling(const std::vector<float>& data, const std::vect
     return scaledData;
 }
 
-ScalerInfo loadScalerInfo(const std::string& filename) {
+/**
+ * @brief Loads scaler information from a file.
+ * 
+ * This function reads scaler information from a file with the given filename. The details of the scaler information and the file format are not provided in the code snippet.
+ * 
+ * @param filename The name of the file from which the scaler information will be loaded.
+ * @return ScalerInfo The loaded scaler information.
+ */
+ScalerInfo FlowMLEventHandler::loadScalerInfo(const std::string& filename) {
     ScalerInfo scaler_info;
 
     std::ifstream file(filename, std::ios::binary);
@@ -83,26 +99,17 @@ ScalerInfo loadScalerInfo(const std::string& filename) {
     return scaler_info;
 }
 
-std::string convertSecondsToDateTime(long seconds) {
-    time_t timestamp = seconds;
-
-    struct tm* timeinfo = localtime(&timestamp);
-
-    char buffer[80];
-    strftime(buffer, 80, "%Y-%m-%d %H:%M:%S", timeinfo);
-
-    return std::string(buffer);
-}
-
-
-bool stringContains(const std::string& mainStr, const std::string& subStr) {
-    return mainStr.find(subStr) != std::string::npos;
-}
-
+/**
+ * @brief Handles the given data event for the specified flow.
+ * 
+ * This function handles flows and predict if the flow is malicious or not.
+ * 
+ * @param event The data event to handle.
+ * @param flow The flow for which to handle the event.
+ */
 void FlowMLEventHandler::handle(DataEvent& event, Flow* flow)
 {
     AppidEvent& appid_event = static_cast<AppidEvent&>(event);
-    const AppidChangeBits& ac_bits = appid_event.get_change_bitset();
 
     const Packet *p = appid_event.get_packet();
     string src_name;

@@ -71,13 +71,15 @@ static THREAD_LOCAL TextLog* json_log;
 #define F_NAME S_NAME ".txt"
 #define MAX_UINT32_DIGITS 12 
 
-unsigned int inter_start = 0;
+struct sid_stats {
+    uint32_t sid;
+    int count;
+};
 
-char* uint32_to_string(uint32_t num) {
-    static char buffer[MAX_UINT32_DIGITS + 1]; // +1 for null terminator
-    snprintf(buffer, sizeof(buffer), "%u", num);
-    return buffer;
-}
+struct ip_entry {
+    string ipAddress;
+    int count;
+};
 
 typedef struct _ip_node
 {
@@ -130,27 +132,6 @@ struct Mitre{
     string msg;
     string reference;
 };
-
-//-------------------------------------------------------------------------
-// field formatting functions
-//-------------------------------------------------------------------------
-
-struct Args
-{
-    Packet* pkt;
-    const char* msg;
-    const Event& event;
-    map<int, Mitre> rules_map;
-};
-
-bool stringContains(const std::string& mainStr, const std::string& subStr) {
-    return mainStr.find(subStr) != std::string::npos;
-}
-
-//-------------------------------------------------------------------------
-// module stuff
-//-------------------------------------------------------------------------
-
 
 static const Parameter s_params[] =
 {
@@ -242,6 +223,51 @@ public:
 
     void alert(Packet*, const char* msg, const Event&) override;
 
+    bool containsIP(std::vector<ip_entry>& vec, string ipAddress) {
+        for (const auto& entry : vec) {
+            if (entry.ipAddress == ipAddress) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    std::string get_proto_str(uint8_t ip_proto)
+    {
+        switch(ip_proto)
+        {
+        case 1:
+            return "ICMP";
+        case 2:
+            return "IGMP";
+        case 6:
+            return "TCP";
+        case 17:
+            return "UDP";
+        default:
+            return std::to_string(ip_proto);
+        }
+    }
+
+    uint32_t getASN(const char* ip, MMDB_s my_mmdb)
+    {
+        uint32_t asn = 0;
+        MMDB_lookup_result_s result;
+        int error;
+        int db_error;
+
+        result = MMDB_lookup_string(&my_mmdb, ip, &error, &db_error);
+
+        MMDB_entry_data_s entry_data;
+        if (result.found_entry && MMDB_get_value(&result.entry, &entry_data, "autonomous_system_number", NULL) == MMDB_SUCCESS) {
+            if (entry_data.has_data && entry_data.type == MMDB_DATA_TYPE_UINT32) {
+                asn = entry_data.uint32;
+            }
+        }
+
+        return asn;
+    }
+
 public:
     string file;
     string mapping;
@@ -255,6 +281,15 @@ public:
     int db_status;
     bool ml = false;
     bool interval = false;
+    unsigned int inter_start = 0;
+
+    std::vector<ip_entry> srcVec;
+    std::vector<ip_entry> dstVec;
+
+    std::vector<string> srcPrint;
+    std::vector<string> dstPrint;
+
+    std::vector<sid_stats> sidStats;
 
 };
 
@@ -322,73 +357,6 @@ DoSJsonLogger::DoSJsonLogger(DoSJsonModule* m) : file(m->file ? F_NAME : "stdout
         }
     }  
     map_file.close();
-}
-
-struct sid_stats {
-    uint32_t sid;
-    int count;
-};
-std::vector<sid_stats> sidStats;
-
-bool compareCount(const sid_stats& a, const sid_stats& b) {
-    return a.count < b.count;
-}
-
-struct IPEntry {
-    string ipAddress;
-    int count;
-};
-
-std::vector<IPEntry> srcVec;
-std::vector<IPEntry> dstVec;
-
-std::vector<string> srcPrint;
-std::vector<string> dstPrint;
-
-
-bool containsIP(std::vector<IPEntry>& vec, string ipAddress) {
-    for (const auto& entry : vec) {
-        if (entry.ipAddress == ipAddress) {
-            return true;
-        }
-    }
-    return false;
-}
-
-std::string get_proto_str(uint8_t ip_proto)
-    {
-        switch(ip_proto)
-        {
-        case 1:
-            return "ICMP";
-        case 2:
-            return "IGMP";
-        case 6:
-            return "TCP";
-        case 17:
-            return "UDP";
-        default:
-            return std::to_string(ip_proto);
-        }
-    }
-
-uint32_t getASN(const char* ip, MMDB_s my_mmdb)
-{
-    uint32_t asn = 0;
-    MMDB_lookup_result_s result;
-    int error;
-    int db_error;
-
-    result = MMDB_lookup_string(&my_mmdb, ip, &error, &db_error);
-
-    MMDB_entry_data_s entry_data;
-    if (result.found_entry && MMDB_get_value(&result.entry, &entry_data, "autonomous_system_number", NULL) == MMDB_SUCCESS) {
-        if (entry_data.has_data && entry_data.type == MMDB_DATA_TYPE_UINT32) {
-            asn = entry_data.uint32;
-        }
-    }
-
-    return asn;
 }
 
 void DoSJsonLogger::open()
@@ -669,7 +637,7 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
                     int comp = ip->contains(&cli_ip);
                     if(comp == SFIP_CONTAINS and name!="EXTERNAL_NET")
                     {
-                        auto it = std::find_if(srcVec.begin(), srcVec.end(), [&](const IPEntry& entry) {
+                        auto it = std::find_if(srcVec.begin(), srcVec.end(), [&](const ip_entry& entry) {
                             return entry.ipAddress == name;
                         });
                         if (it != srcVec.end()) {
@@ -688,7 +656,7 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
             {
                 if(asn_client>0)
                 {
-                    auto it = std::find_if(srcVec.begin(), srcVec.end(), [&](const IPEntry& entry) {
+                    auto it = std::find_if(srcVec.begin(), srcVec.end(), [&](const ip_entry& entry) {
                         return entry.ipAddress == to_string(asn_client);
                     });
                     if (it != srcVec.end()) {
@@ -701,7 +669,7 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
                 }
                 else
                 {
-                    auto it = std::find_if(srcVec.begin(), srcVec.end(), [&](const IPEntry& entry) {
+                    auto it = std::find_if(srcVec.begin(), srcVec.end(), [&](const ip_entry& entry) {
                         return entry.ipAddress == cli_ip_str;
                     });
                     if (it != srcVec.end()) {
@@ -727,7 +695,7 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
                     int comp = ip->contains(&srv_ip);
                     if(comp == SFIP_CONTAINS and name!="EXTERNAL_NET")
                     {
-                        auto it = std::find_if(dstVec.begin(), dstVec.end(), [&](const IPEntry& entry) {
+                        auto it = std::find_if(dstVec.begin(), dstVec.end(), [&](const ip_entry& entry) {
                             return entry.ipAddress == name;
                         });
                         if (it != dstVec.end()) {
@@ -746,7 +714,7 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
             {
                 if(asn_server>0)
                 {
-                    auto it = std::find_if(dstVec.begin(), dstVec.end(), [&](const IPEntry& entry) {
+                    auto it = std::find_if(dstVec.begin(), dstVec.end(), [&](const ip_entry& entry) {
                         return entry.ipAddress == to_string(asn_server);
                     });
                     if (it != dstVec.end()) {
@@ -759,7 +727,7 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
                 }
                 else
                 {
-                    auto it = std::find_if(dstVec.begin(), dstVec.end(), [&](const IPEntry& entry) {
+                    auto it = std::find_if(dstVec.begin(), dstVec.end(), [&](const ip_entry& entry) {
                         return entry.ipAddress == srv_ip_str;
                     });
                     if (it != dstVec.end()) {
@@ -859,9 +827,25 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
             }
         }
     }
-    if (event.sig_info->gid == 129 and interval)
+    /*if(event.sig_info->gid ==129 and (ml or interval))
     {
+        std::ostringstream ss;
+        JsonStream js(ss);
+        js.open();
+        js.put("detection", "TCP-error");
+        js.put("timestamp", convertSecondsToDateTime(p->pkth->ts.tv_sec));
+        if(p->is_ip())
+            js.put("proto", get_proto_str(p->flow->ip_proto));
+        else if(p->is_tcp())
+            js.put("proto", "TCP");
+        else if(p->is_udp())
+            js.put("proto", "UDP");
+        else if(p->is_icmp())
+            js.put("proto", "ICMP");
+            
         bool found = false;
+
+        //client
         for (auto& it : default_ips)
         {
             string name = it.first;
@@ -871,18 +855,8 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
                 int comp = ip->contains(&cli_ip);
                 if(comp == SFIP_CONTAINS and name!="EXTERNAL_NET")
                 {
-                    auto it = std::find_if(srcVec.begin(), srcVec.end(), [&](const IPEntry& entry) {
-                        return entry.ipAddress == name;
-                    });
-                    if (it != srcVec.end()) {
-                        // If the IP address is found, increment the count
-                        it->count++;
-                    } else {
-                        // If the IP address is not found, add a new entry to the vector
-                        srcVec.push_back({name, 1});
-                    }
+                    js.put("src", name);
                     found = true;
-                    break;
                 }
             }
         }
@@ -890,32 +864,14 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
         {
             if(asn_client>0)
             {
-                auto it = std::find_if(srcVec.begin(), srcVec.end(), [&](const IPEntry& entry) {
-                    return entry.ipAddress == to_string(asn_client);
-                });
-                if (it != srcVec.end()) {
-                    // If the IP address is found, increment the count
-                    it->count++;
-                } else {
-                    // If the IP address is not found, add a new entry to the vector
-                    srcVec.push_back({to_string(asn_client), 1});
-                }
+                js.put("src", asn_client);
             }
             else
             {
-                auto it = std::find_if(srcVec.begin(), srcVec.end(), [&](const IPEntry& entry) {
-                    return entry.ipAddress == cli_ip_str;
-                });
-                if (it != srcVec.end()) {
-                    // If the IP address is found, increment the count
-                    it->count++;
-                } else {
-                    // If the IP address is not found, add a new entry to the vector
-                    srcVec.push_back({cli_ip_str, 1});
-                }
+                js.put("src", cli_ip_str);
             }
         }
-
+        //server
         found = false;
         for (auto& it : default_ips)
         {
@@ -926,18 +882,8 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
                 int comp = ip->contains(&srv_ip);
                 if(comp == SFIP_CONTAINS and name!="EXTERNAL_NET")
                 {
-                    auto it = std::find_if(dstVec.begin(), dstVec.end(), [&](const IPEntry& entry) {
-                        return entry.ipAddress == name;
-                    });
-                    if (it != dstVec.end()) {
-                        // If the IP address is found, increment the count
-                        it->count++;
-                    } else {
-                        // If the IP address is not found, add a new entry to the vector
-                        dstVec.push_back({name, 1});
-                    }
+                    js.put("dst", name);
                     found = true;
-                    break;
                 }
             }
         }
@@ -945,33 +891,25 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
         {
             if(asn_server>0)
             {
-                auto it = std::find_if(dstVec.begin(), dstVec.end(), [&](const IPEntry& entry) {
-                    return entry.ipAddress == to_string(asn_server);
-                });
-                if (it != dstVec.end()) {
-                    // If the IP address is found, increment the count
-                    it->count++;
-                } else {
-                    // If the IP address is not found, add a new entry to the vector
-                    dstVec.push_back({to_string(asn_server), 1});
-                }
+                js.put("dst", asn_server);
             }
             else
             {
-                auto it = std::find_if(dstVec.begin(), dstVec.end(), [&](const IPEntry& entry) {
-                    return entry.ipAddress == srv_ip_str;
-                });
-                if (it != dstVec.end()) {
-                    // If the IP address is found, increment the count
-                    it->count++;
-                } else {
-                    // If the IP address is not found, add a new entry to the vector
-                    dstVec.push_back({srv_ip_str, 1});
-                }
+                js.put("dst", srv_ip_str);
             }
         }
-        
-    }
+        js.close();
+        std::ofstream file_stream;
+        file_stream.open("alert_dos_json.txt", std::ios_base::app);
+
+        if (file_stream.is_open()) {
+            file_stream << ss.str();
+            file_stream.close();
+        }
+        else {
+            std::cerr << "Error opening file" << std::endl;
+        }
+    }*/
     
 }
 
