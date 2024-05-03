@@ -200,7 +200,6 @@ public:
         }
         
         DataBus::subscribe_network(appid_pub_key, AppIdEventIds::ANY_CHANGE, new IntervalDetectorEventHandler(*config));
-        //DataBus::subscribe_network(intrinsic_pub_key, IntrinsicEventIds::FLOW_STATE_SETUP, new FlowCounterEventHandler(*config));
         return true;
     }
     

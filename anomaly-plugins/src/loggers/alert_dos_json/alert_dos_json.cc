@@ -81,6 +81,9 @@ struct ip_entry {
     int count;
 };
 
+/**
+ * necessary default Snort structures for loading default IP groups
+ */
 typedef struct _ip_node
 {
     snort::SfCidr* ip = nullptr;
@@ -91,15 +94,8 @@ typedef struct _ip_node
 
 struct sfip_var_t
 {
-    /* Linked lists.  Switch to something faster later */
     sfip_node_t* head;
     sfip_node_t* neg_head;
-
-    /* The mode above will select whether to use the sfip_node_t linked list
-     * or the IP routing table */
-//    sfrt rt;
-
-    /* Linked list of IP variables for the variable table */
     sfip_var_t* next;
 
     uint32_t head_count;
@@ -109,8 +105,6 @@ struct sfip_var_t
     char* value;
 };
 
-/* A variable table for storing and looking up variables
-   Expand later to use a faster data structure */
 struct vartable_t
 {
     sfip_var_t* head;
