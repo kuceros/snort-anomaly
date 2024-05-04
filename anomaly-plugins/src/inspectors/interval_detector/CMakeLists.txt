@@ -44,7 +44,6 @@ target_include_directories (
 target_link_libraries(
     interval_detector
     maxminddb
-    ml
 )
 
 install (

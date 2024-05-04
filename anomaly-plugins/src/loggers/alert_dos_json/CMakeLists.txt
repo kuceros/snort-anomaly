@@ -9,8 +9,7 @@ if(APPLE)
     set(CMAKE_MACOSX_RPATH OFF)
 endif(APPLE)
 
-# Specify the path to libmaxminddb
-set(MAXMINDDB_LIBRARIES "/usr/local/lib/libmaxminddb.dylib")
+link_directories(/usr/local/lib)
 
 add_library(
     alert_dos_json MODULE
@@ -22,6 +21,7 @@ if(APPLE)
         alert_dos_json
         PROPERTIES
             LINK_FLAGS "-undefined dynamic_lookup"
+            INSTALL_RPATH "/usr/local/lib"
     )
 endif(APPLE)
 
@@ -38,7 +38,7 @@ target_include_directories(
 
 target_link_libraries(
     alert_dos_json
-    ${MAXMINDDB_LIBRARIES}
+    maxminddb
 )
 
 install(

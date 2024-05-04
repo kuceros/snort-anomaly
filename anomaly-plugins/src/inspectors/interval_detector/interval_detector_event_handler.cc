@@ -65,7 +65,7 @@ vector<float> IntervalDetectorEventHandler::minMaxScaling(const vector<float>& d
 void IntervalDetectorEventHandler::saveModel(map<string, GroupThresholds>& thresholds_map, int interval, const string& filename) {
     ofstream outfile(filename, ios::binary);
     if (!outfile.is_open()) {
-        cerr << "Error opening file: " << filename << endl;
+        WarningMessage("Error opening file: %s\n",filename.c_str());
         return;
     }
 
@@ -378,7 +378,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
     MMDB_s my_mmdb;
     int status = MMDB_open(config.db_name.c_str(), MMDB_MODE_MMAP, &my_mmdb);
     if (status != MMDB_SUCCESS) {
-        cerr << "Error opening ASN database: " << MMDB_strerror(status) << endl;
+        WarningMessage("%s\n", MMDB_strerror(status));
     }
     uint32_t asn_client = 0;
     uint32_t asn_server = 0;
@@ -402,6 +402,9 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
             asn_server = entry_data.uint32;
         }
     }
+
+    if (status == MMDB_SUCCESS)
+        MMDB_close(&my_mmdb);
 
     if(config.training)
     {
@@ -433,7 +436,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
             }
             catch(const exception& e)
             {
-                cerr << e.what() << '\n';
+                WarningMessage("%s\n",e.what());
             }
         }
         window_start_time = p->pkth->ts.tv_sec;
