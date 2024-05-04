@@ -62,7 +62,7 @@ vector<float> IntervalDetectorEventHandler::minMaxScaling(const vector<float>& d
  * @param interval The interval for which the thresholds were calculated.
  * @param filename The name of the file to which the thresholds map will be saved.
  */
-void IntervalDetectorEventHandler::saveModel(map<string, GroupThreshold>& thresholds_map, int interval, const string& filename) {
+void IntervalDetectorEventHandler::saveModel(map<string, GroupThresholds>& thresholds_map, int interval, const string& filename) {
     ofstream outfile(filename, ios::binary);
     if (!outfile.is_open()) {
         cerr << "Error opening file: " << filename << endl;
@@ -78,7 +78,7 @@ void IntervalDetectorEventHandler::saveModel(map<string, GroupThreshold>& thresh
         outfile.write(reinterpret_cast<const char*>(&key_size), sizeof(size_t));
         outfile.write(pair.first.data(), key_size);
 
-        outfile.write(reinterpret_cast<const char*>(&pair.second), sizeof(GroupThreshold));
+        outfile.write(reinterpret_cast<const char*>(&pair.second), sizeof(GroupThresholds));
     }
     thresholds_map.clear();
     outfile.close();
@@ -90,10 +90,10 @@ void IntervalDetectorEventHandler::saveModel(map<string, GroupThreshold>& thresh
  * This function reads the interval and the size of the thresholds map from the file first. Then, for each pair in the thresholds map, it reads the size of the key, the key itself, and the value from the file. It throws a runtime error if the file cannot be opened.
  * 
  * @param filename The name of the file from which the thresholds map will be loaded.
- * @return pair<map<string, GroupThreshold>, int> The loaded thresholds map and the interval.
+ * @return pair<map<string, GroupThresholds>, int> The loaded thresholds map and the interval.
  */
-pair<map<string, GroupThreshold>, int> IntervalDetectorEventHandler::loadModel(const string& filename) {
-    map<string, GroupThreshold> thresholds_map;
+pair<map<string, GroupThresholds>, int> IntervalDetectorEventHandler::loadModel(const string& filename) {
+    map<string, GroupThresholds> thresholds_map;
     int interval = 0;
 
     ifstream infile(filename, ios::binary);
@@ -127,10 +127,10 @@ pair<map<string, GroupThreshold>, int> IntervalDetectorEventHandler::loadModel(c
             throw runtime_error("Error reading key from file: " + filename);
         }
 
-        GroupThreshold value;
-        infile.read(reinterpret_cast<char*>(&value), sizeof(GroupThreshold));
+        GroupThresholds value;
+        infile.read(reinterpret_cast<char*>(&value), sizeof(GroupThresholds));
         if (infile.fail()) {
-            throw runtime_error("Error reading GroupThreshold from file: " + filename);
+            throw runtime_error("Error reading GroupThresholds from file: " + filename);
         }
         thresholds_map[key] = value;
         sum_src_pkt_thresh += value.src_pkt_thresh;
@@ -141,7 +141,7 @@ pair<map<string, GroupThreshold>, int> IntervalDetectorEventHandler::loadModel(c
         sum_src_count_thresh += value.src_count_thresh;
     }
 
-    GroupThreshold def_value;
+    GroupThresholds def_value;
     def_value.src_pkt_thresh = sum_src_pkt_thresh/(int)map_size;
     def_value.src_bytes_thresh = sum_src_bytes_thresh/(int)map_size;
     def_value.dst_pkt_thresh = sum_dst_pkt_thresh/(int)map_size;
@@ -206,15 +206,6 @@ void IntervalDetectorEventHandler::CalcUCL(int window, int interval, int num_sig
         stats_map[name].dst_bytes_per_inter.push_back(stats_map[name].dst_bytes);
         stats_map[name].dst_count_per_inter.push_back(stats_map[name].dst_count);
         stats_map[name].src_count_per_inter.push_back(stats_map[name].src_count);
-
-        cout<<"Stats for "<<name<<endl;
-        cout<<"src_pkts: "<<stats.src_pkts<<endl;
-        cout<<"src_bytes: "<<stats.src_bytes<<endl;
-        cout<<"dst_pkts: "<<stats.dst_pkts<<endl;
-        cout<<"dst_bytes: "<<stats.dst_bytes<<endl;
-        cout<<"dst_count: "<<stats.dst_count<<endl;
-        cout<<"src_count: "<<stats.src_count<<endl;
-        cout<<endl;
 
         stats_map[name].src_pkts = 0;
         stats_map[name].src_bytes = 0;
@@ -470,7 +461,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
         {
             string name = it.first;
             GroupStats stats = it.second;
-            GroupThreshold threshold = thresholds_map[name];
+            GroupThresholds threshold = thresholds_map[name];
 
             if(!config.load_model)
             {
@@ -492,40 +483,40 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
         
         DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_INTERVAL); 
 
-        for (auto it = IntervalFlows.begin(); it != IntervalFlows.end(); ) 
+        for (auto it = interval_flows.begin(); it != interval_flows.end(); ) 
         {
             if (find(attack_src_ips.begin(), attack_src_ips.end(), it->src_ip) != attack_src_ips.end()) {
                 
                 ostringstream ss;
-                ss << static_cast<unsigned>(it->proto) << ", " << it->ints[0] << ", " << it->ints[1] << ", " << it->ints[2] << ", " << it->ints[3] << ", 1"<< endl;
+                ss << static_cast<unsigned>(it->proto) << ", " << it->data[0] << ", " << it->data[1] << ", " << it->data[2] << ", " << it->data[3] << ", 1"<< endl;
                 if (!write_to_file(ss.str())) {
                     LogMessage("%s", ss.str().c_str());
                 }
-                it = IntervalFlows.erase(it);
+                it = interval_flows.erase(it);
             }
             else if (find(attack_dst_ips.begin(), attack_dst_ips.end(), it->dst_ip) != attack_dst_ips.end()) {
              
                 ostringstream ss;
                 
-                ss << static_cast<unsigned>(it->proto) << ", " << it->ints[0] << ", " << it->ints[1] << ", " << it->ints[2] << ", " << it->ints[3] << ", 1"<< endl;
+                ss << static_cast<unsigned>(it->proto) << ", " << it->data[0] << ", " << it->data[1] << ", " << it->data[2] << ", " << it->data[3] << ", 1"<< endl;
                 if (!write_to_file(ss.str())) {
                     LogMessage("%s", ss.str().c_str());
                 }
-                it = IntervalFlows.erase(it);
+                it = interval_flows.erase(it);
             } else {
                 ostringstream ss;
-                ss << static_cast<unsigned>(it->proto) << ", " << it->ints[0] << ", " << it->ints[1] << ", " << it->ints[2] << ", " << it->ints[3] << ", 0"<< endl;
+                ss << static_cast<unsigned>(it->proto) << ", " << it->data[0] << ", " << it->data[1] << ", " << it->data[2] << ", " << it->data[3] << ", 0"<< endl;
                 if (!write_to_file(ss.str())) {
                     LogMessage("%s", ss.str().c_str());
                 }
-                it = IntervalFlows.erase(it);
+                it = interval_flows.erase(it);
             }
         }
         attack_dst_ips.clear();
         attack_src_ips.clear();
-        IntervalFlows.clear();
+        interval_flows.clear();
         
-        IntervalFlows.clear();
+        interval_flows.clear();
         interval_start_time +=config.interval;
     }
     stats_mutex.unlock();
@@ -554,7 +545,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                 src_pkts = flow->flowstats.client_pkts;
                 src_name = name;
 
-                GroupThreshold threshold = thresholds_map[name];
+                GroupThresholds threshold = thresholds_map[name];
 
                 if(threshold.src_bytes_thresh>0 and threshold.src_pkt_thresh>0 and threshold.src_count_thresh>0)
                 {
@@ -570,7 +561,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                 }
                 else if(config.load_model)
                 {
-                    GroupThreshold threshold = thresholds_map["def"];
+                    GroupThresholds threshold = thresholds_map["def"];
                     if(stats_map[name].src_pkts > threshold.src_pkt_thresh or stats_map[name].src_bytes > threshold.src_bytes_thresh or stats_map[name].src_count > threshold.src_count_thresh)
                     {
                         auto it = find(attack_src_ips.begin(), attack_src_ips.end(), name);
@@ -598,7 +589,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
             src_bytes = flow->flowstats.client_bytes;
             src_pkts = flow->flowstats.client_pkts;
             src_name = to_string(asn_client);
-            GroupThreshold threshold = thresholds_map[to_string(asn_client)];
+            GroupThresholds threshold = thresholds_map[to_string(asn_client)];
 
             if(threshold.src_bytes_thresh>0 and threshold.src_pkt_thresh>0 and threshold.src_count_thresh>0)
             {
@@ -614,7 +605,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
             }
             else if(config.load_model)
             {
-                GroupThreshold threshold = thresholds_map["def"];
+                GroupThresholds threshold = thresholds_map["def"];
                 if(stats_map[to_string(asn_client)].src_pkts > threshold.src_pkt_thresh or stats_map[to_string(asn_client)].src_bytes > threshold.src_bytes_thresh or stats_map[to_string(asn_client)].src_count > threshold.src_count_thresh)
                 {
                     auto it = find(attack_src_ips.begin(), attack_src_ips.end(), to_string(asn_client));
@@ -636,7 +627,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
             src_pkts = flow->flowstats.client_pkts;
             src_name = cli_ip_str;
 
-            GroupThreshold threshold = thresholds_map[cli_ip_str];
+            GroupThresholds threshold = thresholds_map[cli_ip_str];
             
             if(threshold.src_bytes_thresh>0 and threshold.src_pkt_thresh>0 and threshold.src_count_thresh>0)
             {
@@ -652,7 +643,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
             }
             else if(config.load_model)
             {
-                GroupThreshold threshold = thresholds_map["def"];
+                GroupThresholds threshold = thresholds_map["def"];
                 if(stats_map[cli_ip_str].src_pkts > threshold.src_pkt_thresh or stats_map[cli_ip_str].src_bytes > threshold.src_bytes_thresh or stats_map[cli_ip_str].src_count > threshold.src_count_thresh)
                 {
                     auto it = find(attack_src_ips.begin(), attack_src_ips.end(), cli_ip_str);
@@ -691,7 +682,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                 dst_pkts = flow->flowstats.server_pkts;
                 dst_name = name;
 
-                GroupThreshold threshold = thresholds_map[name];
+                GroupThresholds threshold = thresholds_map[name];
 
                 if(threshold.dst_bytes_thresh>0 and threshold.dst_pkt_thresh>0 and threshold.dst_count_thresh>0)
                 {
@@ -707,7 +698,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                 }
                 else if(config.load_model)
                 {
-                    GroupThreshold threshold = thresholds_map["def"];
+                    GroupThresholds threshold = thresholds_map["def"];
                     if(stats_map[name].dst_pkts > threshold.dst_pkt_thresh or stats_map[name].dst_bytes > threshold.dst_bytes_thresh or stats_map[name].dst_count > threshold.dst_count_thresh)
                     {
                         auto it = find(attack_dst_ips.begin(), attack_dst_ips.end(), name);
@@ -735,7 +726,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
             dst_bytes = flow->flowstats.server_bytes;
             dst_pkts = flow->flowstats.server_pkts;
             dst_name = to_string(asn_server);
-            GroupThreshold threshold = thresholds_map[to_string(asn_server)];
+            GroupThresholds threshold = thresholds_map[to_string(asn_server)];
             
             if(threshold.dst_bytes_thresh>0 and threshold.dst_pkt_thresh>0 and threshold.dst_count_thresh>0)
             {
@@ -751,7 +742,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
             }
             else if(config.load_model)
             {
-                GroupThreshold threshold = thresholds_map["def"];
+                GroupThresholds threshold = thresholds_map["def"];
                 if(stats_map[to_string(asn_server)].dst_pkts > threshold.dst_pkt_thresh or stats_map[to_string(asn_server)].dst_bytes > threshold.dst_bytes_thresh or stats_map[to_string(asn_server)].dst_count > threshold.dst_count_thresh)
                 {
                     auto it = find(attack_dst_ips.begin(), attack_dst_ips.end(), to_string(asn_server));
@@ -772,7 +763,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
             dst_bytes = flow->flowstats.server_bytes;
             dst_pkts = flow->flowstats.server_pkts;
             dst_name = srv_ip_str;
-            GroupThreshold threshold = thresholds_map[srv_ip_str];
+            GroupThresholds threshold = thresholds_map[srv_ip_str];
 
             if(threshold.dst_bytes_thresh>0 and threshold.dst_pkt_thresh>0 and threshold.dst_count_thresh>0)
             {
@@ -788,7 +779,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
             }
             else if(config.load_model)
             {
-                GroupThreshold threshold = thresholds_map["def"];
+                GroupThresholds threshold = thresholds_map["def"];
                 if(stats_map[srv_ip_str].dst_pkts > threshold.dst_pkt_thresh or stats_map[srv_ip_str].dst_bytes > threshold.dst_bytes_thresh or stats_map[srv_ip_str].dst_count > threshold.dst_count_thresh)
                 {
                     auto it = find(attack_dst_ips.begin(), attack_dst_ips.end(), srv_ip_str);
@@ -814,5 +805,5 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
         proto = PROTO_ICMP;
 
     if(!config.training)
-        IntervalFlows.push_back({src_name, dst_name, proto, {src_bytes, src_pkts, dst_bytes, dst_pkts}});
+        interval_flows.push_back({src_name, dst_name, proto, {src_bytes, src_pkts, dst_bytes, dst_pkts}});
 }
