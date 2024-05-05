@@ -1,4 +1,11 @@
 # Snort anomaly plugins
+
+Installed Snort 3 required! 
+
+Snort web: https://www.snort.org/downloads
+
+GitHub source: https://github.com/snort3/snort3
+
 ## Installation
 1. Download this repository and extract it.
 2. Download *libml* library from GitHub.com (https://github.com/snort3/libml) and extract it.
