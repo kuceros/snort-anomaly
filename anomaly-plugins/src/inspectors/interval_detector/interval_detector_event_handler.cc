@@ -245,8 +245,12 @@ void IntervalDetectorEventHandler::CalcUCL(int window, int interval, int num_sig
         {
             sum_src_count += iter;
         }
-        
 
+        if(counter == 0)
+        {
+            continue;
+        }
+        
         avg_src_bytes = sum_src_bytes / (counter); 
         avg_src_packets = sum_src_packets / counter;
         avg_dst_bytes = sum_dst_bytes / counter;
@@ -451,7 +455,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
         {
             CalcUCL(config.window, config.interval, config.num_sigma);
         }
-            stats_map.clear();
+        stats_map.clear();
 
         DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_INTERVAL);    
     }
