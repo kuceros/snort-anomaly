@@ -72,6 +72,12 @@ GitHub source: https://github.com/snort3/snort3
         db = '<your_path>/GeoLite2-ASN/GeoLite2-ASN.mmdb' --ASN database
     }
 
+### Example run
+
+```snort -c "<path_to_snort_lua>/snort.lua" -r "<your_input_pcap>" --plugin-path "<path_to_installed_plugins> -q```
+
+
+Example path to plugins: ```"/usr/local/snort/lib/snort/plugins/extra/"```
 
 
 
