@@ -9,8 +9,19 @@
     cd build
     sudo make -j$(nproc) install
 </pre>
-5. Go to extracted *anomaly-detection* repository.
-6. Install *anomaly-plugins*:
+5. Install *libmaxminddb* for handling MaxMind ASN database:
+    
+    Ubuntu:
+    ```sudo apt-get install -y libmaxminddb-dev```
+
+    MacOS:
+    ```brew install libmaxminddb```
+    
+    GitHub source:
+    https://github.com/maxmind/libmaxminddb
+
+6. Go to extracted *anomaly-detection* repository.
+7. Install *anomaly-plugins*:
 <pre>
     cd anomaly-plugins
     sudo ./configure_cmake.sh
