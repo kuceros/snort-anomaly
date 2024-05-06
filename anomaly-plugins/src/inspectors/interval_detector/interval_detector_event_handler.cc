@@ -112,6 +112,20 @@ pair<map<string, GroupThresholds>, int> IntervalDetectorEventHandler::loadModel(
     double sum_dst_bytes_thresh = 0.0;
     double sum_dst_count_thresh = 0.0;
     double sum_src_count_thresh = 0.0;
+    double sum_udp_flows_thresh = 0.0;
+    double sum_tcp_flows_thresh = 0.0;
+    double sum_icmp_flows_thresh = 0.0;
+
+    int count_src_pkt_thresh = 0;
+    int count_src_bytes_thresh = 0;
+    int count_dst_pkt_thresh = 0;
+    int count_dst_bytes_thresh = 0;
+    int count_dst_count_thresh = 0;
+    int count_src_count_thresh = 0;
+    int count_udp_flows_thresh = 0;
+    int count_tcp_flows_thresh = 0;
+    int count_icmp_flows_thresh = 0;
+
 
     for (size_t i = 0; i < map_size; ++i) {
         size_t key_size;
@@ -139,15 +153,41 @@ pair<map<string, GroupThresholds>, int> IntervalDetectorEventHandler::loadModel(
         sum_dst_bytes_thresh += value.dst_bytes_thresh;
         sum_dst_count_thresh += value.dst_count_thresh;
         sum_src_count_thresh += value.src_count_thresh;
+        sum_udp_flows_thresh += value.udp_flows_thresh;
+        sum_tcp_flows_thresh += value.tcp_flows_thresh;
+        sum_icmp_flows_thresh += value.icmp_flows_thresh;
+
+        if(value.src_pkt_thresh != 0)
+            count_src_pkt_thresh++;
+        if(value.src_bytes_thresh != 0)
+            count_src_bytes_thresh++;
+        if(value.dst_pkt_thresh != 0)
+            count_dst_pkt_thresh++;
+        if(value.dst_bytes_thresh != 0)
+            count_dst_bytes_thresh++;
+        if(value.dst_count_thresh != 0)
+            count_dst_count_thresh++;
+        if(value.src_count_thresh != 0)
+            count_src_count_thresh++;
+        if(value.udp_flows_thresh != 0)
+            count_udp_flows_thresh++;
+        if(value.tcp_flows_thresh != 0)
+            count_tcp_flows_thresh++;
+        if(value.icmp_flows_thresh != 0)
+            count_icmp_flows_thresh++;
+        
     }
 
     GroupThresholds def_value;
-    def_value.src_pkt_thresh = sum_src_pkt_thresh/(int)map_size;
-    def_value.src_bytes_thresh = sum_src_bytes_thresh/(int)map_size;
-    def_value.dst_pkt_thresh = sum_dst_pkt_thresh/(int)map_size;
-    def_value.dst_bytes_thresh = sum_dst_bytes_thresh/(int)map_size;
-    def_value.dst_count_thresh = sum_dst_count_thresh/(int)map_size;
-    def_value.src_count_thresh = sum_src_count_thresh/(int)map_size;
+    def_value.src_pkt_thresh = sum_src_pkt_thresh/count_src_pkt_thresh;
+    def_value.src_bytes_thresh = sum_src_bytes_thresh/count_src_bytes_thresh;
+    def_value.dst_pkt_thresh = sum_dst_pkt_thresh/count_dst_pkt_thresh;
+    def_value.dst_bytes_thresh = sum_dst_bytes_thresh/count_dst_bytes_thresh;
+    def_value.dst_count_thresh = sum_dst_count_thresh/count_dst_count_thresh;
+    def_value.src_count_thresh = sum_src_count_thresh/count_src_count_thresh;
+    def_value.udp_flows_thresh = sum_udp_flows_thresh/count_udp_flows_thresh;
+    def_value.tcp_flows_thresh = sum_tcp_flows_thresh/count_tcp_flows_thresh;   
+    def_value.icmp_flows_thresh = sum_icmp_flows_thresh/count_icmp_flows_thresh;
     thresholds_map["def"] = def_value;
 
     infile.close();
@@ -753,7 +793,8 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
         vector<const snort::SfCidr*> ip_addresses = it.second;
         for (auto& ip : ip_addresses)
         {
-            int comp = ip->contains(&cli_ip);
+            int comp = ip->contains(&cli_ip); 
+             
             if(comp == SFIP_CONTAINS and name!="EXTERNAL_NET")
             {
                 stats_mutex.lock();
@@ -807,6 +848,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                             attack_src_ips.push_back(name);
                         }
                         queueEvent(name, true, false);
+                         cout<<"def"<<endl;
                     }
                 }
                 found = true;
@@ -862,6 +904,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                         attack_src_ips.push_back(to_string(asn_client));
                     }
                     queueEvent(to_string(asn_client), true, false);
+                     cout<<"def"<<endl;
                 }
             }
         }
@@ -911,7 +954,8 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                     if (it == attack_src_ips.end()) {
                         attack_src_ips.push_back(cli_ip_str);
                     }
-                    queueEvent(cli_ip_str, true, false);          
+                    queueEvent(cli_ip_str, true, false);       
+                     cout<<"def"<<endl;   
                 }
             }
         }
@@ -924,7 +968,8 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
         vector<const snort::SfCidr*> ip_addresses = it.second;
         for (auto& ip : ip_addresses)
         {
-            int comp = ip->contains(&srv_ip);
+            int comp = ip->contains(&srv_ip);   
+             
             if(comp == SFIP_CONTAINS and name!="EXTERNAL_NET")
             {
                 stats_mutex.lock();
@@ -979,6 +1024,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                             attack_dst_ips.push_back(name);
                         }
                         queueEvent(name, false, true);
+                         cout<<"def"<<endl;
                     }
                 }
                 found = true;
@@ -1035,6 +1081,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                         attack_dst_ips.push_back(to_string(asn_server));
                     }
                     queueEvent(to_string(asn_server), false, true);
+                    cout<<"def"<<endl;
                 }
             }
         }
@@ -1084,6 +1131,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                         attack_dst_ips.push_back(srv_ip_str);
                     }
                     queueEvent(srv_ip_str, false, true);
+                     cout<<"def"<<endl;
                 }
             }
         }
