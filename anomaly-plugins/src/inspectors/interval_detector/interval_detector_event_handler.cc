@@ -733,10 +733,6 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
             }
         }
 
-        cout << "Interval: " << convertSecondsToDateTime(interval_start_time) << " - " << convertSecondsToDateTime(interval_start_time+config.interval) << endl;
-        cout<< "udp: " << attack_udp << " tcp: " << attack_tcp << " icmp: " << attack_icmp << " others: " << attack_others << endl;
-        cout<<endl;
-
         attack_dst_ips.clear();
         attack_src_ips.clear();
         interval_flows.clear();
