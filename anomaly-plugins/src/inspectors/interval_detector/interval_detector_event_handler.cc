@@ -35,6 +35,7 @@
 #include "utils/util.h"
 #include "detection/detection_engine.h"
 #include "log/log_text.h"
+#include "log/log.h"
 
 using namespace snort;
 using namespace std;
@@ -726,7 +727,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                     }
                     it = interval_flows.erase(it);
                 }
-                else if(it->proto == PROTO_TCP and attack_tcp)
+                else if(it->proto == PROTO_TCP and attack_tcp and it->tcp_syn)
                 {
                     ostringstream ss;
                     ss << static_cast<unsigned>(it->proto) << ", " << it->data[0] << ", " << it->data[1] << ", " << it->data[2] << ", " << it->data[3] << ", 1"<< endl;
@@ -848,7 +849,6 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                             attack_src_ips.push_back(name);
                         }
                         queueEvent(name, true, false);
-                         cout<<"def"<<endl;
                     }
                 }
                 found = true;
@@ -904,7 +904,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                         attack_src_ips.push_back(to_string(asn_client));
                     }
                     queueEvent(to_string(asn_client), true, false);
-                     cout<<"def"<<endl;
+                     
                 }
             }
         }
@@ -955,7 +955,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                         attack_src_ips.push_back(cli_ip_str);
                     }
                     queueEvent(cli_ip_str, true, false);       
-                     cout<<"def"<<endl;   
+                        
                 }
             }
         }
@@ -1024,7 +1024,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                             attack_dst_ips.push_back(name);
                         }
                         queueEvent(name, false, true);
-                         cout<<"def"<<endl;
+                         
                     }
                 }
                 found = true;
@@ -1081,7 +1081,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                         attack_dst_ips.push_back(to_string(asn_server));
                     }
                     queueEvent(to_string(asn_server), false, true);
-                    cout<<"def"<<endl;
+                    
                 }
             }
         }
@@ -1131,12 +1131,21 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                         attack_dst_ips.push_back(srv_ip_str);
                     }
                     queueEvent(srv_ip_str, false, true);
-                     cout<<"def"<<endl;
+                     
                 }
             }
         }
     }
 
+    bool syn = false;
+    if(proto == PROTO_TCP)
+    {
+        char tcpFlags[9];
+        CreateTCPFlagString(p->ptrs.tcph, tcpFlags);
+        if(strcmp(tcpFlags, "******S*") == 0)
+            syn = true;
+    }
+
     if(!config.training)
-        interval_flows.push_back({src_name, dst_name, proto, {src_bytes, src_pkts, dst_bytes, dst_pkts}});
+        interval_flows.push_back({src_name, dst_name, proto, syn, {src_bytes, src_pkts, dst_bytes, dst_pkts}});
 }
