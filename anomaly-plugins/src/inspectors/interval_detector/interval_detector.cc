@@ -73,8 +73,14 @@ static const Parameter s_params[] =
 static RuleMap inter_rules[] =
 {
     { INTERVAL_DETECTOR_INTERVAL, "interval begins" },
-    { INTERVAL_DETECTOR_FROM, "attack from" },
-    { INTERVAL_DETECTOR_TO, "attack to" },
+    { INTERVAL_DETECTOR_FROM_UDP, "attack from - udp" },
+    { INTERVAL_DETECTOR_FROM_TCP, "attack from - tcp" },
+    { INTERVAL_DETECTOR_FROM_ICMP, "attack from - icmp" },
+    { INTERVAL_DETECTOR_FROM_OTHERS, "attack from - others" },
+    { INTERVAL_DETECTOR_TO_UDP, " attack to - udp" },
+    { INTERVAL_DETECTOR_TO_TCP, "attack to - tcp" },
+    { INTERVAL_DETECTOR_TO_ICMP, "attack to - icmp" },
+    { INTERVAL_DETECTOR_TO_OTHERS, "attack to - others" },
     { 0, nullptr }
 };
 

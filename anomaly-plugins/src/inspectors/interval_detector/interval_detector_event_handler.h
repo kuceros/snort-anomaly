@@ -52,6 +52,9 @@ typedef struct _group_stats
     uint64_t dst_count = 0;
     uint64_t dst_pkts = 0;
     uint64_t dst_bytes = 0;
+    uint64_t udp_flows = 0;
+    uint64_t tcp_flows = 0;
+    uint64_t icmp_flows = 0;
     uint64_t time = 0;
     std::vector<uint64_t> src_pkts_per_inter;
     std::vector<uint64_t> src_bytes_per_inter;
@@ -59,6 +62,9 @@ typedef struct _group_stats
     std::vector<uint64_t> dst_bytes_per_inter;
     std::vector<uint64_t> dst_count_per_inter;
     std::vector<uint64_t> src_count_per_inter;
+    std::vector<uint64_t> udp_flows_per_inter;
+    std::vector<uint64_t> tcp_flows_per_inter;
+    std::vector<uint64_t> icmp_flows_per_inter;
 } GroupStats;
 
 typedef struct _group_thresh
@@ -69,6 +75,9 @@ typedef struct _group_thresh
     double src_bytes_thresh = 0;
     double dst_pkt_thresh = 0;
     double dst_bytes_thresh = 0;
+    double udp_flows_thresh = 0;
+    double tcp_flows_thresh = 0;
+    double icmp_flows_thresh = 0;
 } GroupThresholds;
 
 
@@ -103,6 +112,10 @@ private:
     std::vector<FlowInfo> interval_flows;
     std::vector<std::string> attack_src_ips;
     std::vector<std::string> attack_dst_ips;
+    bool attack_udp = false;
+    bool attack_tcp = false;
+    bool attack_icmp = false;
+    bool attack_others = false;
 
     int counter = 0;
 
@@ -127,6 +140,7 @@ private:
     std::string convertSecondsToDateTime(long seconds);
     bool stringContains(const std::string& mainStr, const std::string& subStr);
     bool checkGroupThresh(const std::map<std::string, GroupThresholds>& thresholds_map, const std::string& name, const GroupStats& stats);
+    void queueEvent(std::string name, bool from, bool to);
 
 
     std::string get_proto_str(uint8_t ip_proto) const

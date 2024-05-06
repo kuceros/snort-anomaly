@@ -188,12 +188,18 @@ void IntervalDetectorEventHandler::CalcUCL(int window, int interval, int num_sig
         uint64_t sum_src_packets = 0;
         uint64_t sum_dst_bytes = 0;
         uint64_t sum_dst_packets = 0;
+        uint64_t sum_udp_flows = 0;
+        uint64_t sum_tcp_flows = 0;
+        uint64_t sum_icmp_flows = 0;
         double avg_src_bytes = 0.0;
         double avg_src_packets = 0.0;
         double avg_dst_bytes = 0.0;
         double avg_dst_packets = 0.0;
         double avg_dst_count = 0.0;
         double avg_src_count = 0.0;
+        double avg_udp_flows = 0.0;
+        double avg_tcp_flows = 0.0;
+        double avg_icmp_flows = 0.0;
 
         int counter = 0;
 
@@ -206,6 +212,9 @@ void IntervalDetectorEventHandler::CalcUCL(int window, int interval, int num_sig
         stats_map[name].dst_bytes_per_inter.push_back(stats_map[name].dst_bytes);
         stats_map[name].dst_count_per_inter.push_back(stats_map[name].dst_count);
         stats_map[name].src_count_per_inter.push_back(stats_map[name].src_count);
+        stats_map[name].udp_flows_per_inter.push_back(stats_map[name].udp_flows);
+        stats_map[name].tcp_flows_per_inter.push_back(stats_map[name].tcp_flows);
+        stats_map[name].icmp_flows_per_inter.push_back(stats_map[name].icmp_flows);
 
         stats_map[name].src_pkts = 0;
         stats_map[name].src_bytes = 0;
@@ -213,6 +222,9 @@ void IntervalDetectorEventHandler::CalcUCL(int window, int interval, int num_sig
         stats_map[name].dst_bytes = 0;
         stats_map[name].dst_count = 0;
         stats_map[name].src_count = 0;
+        stats_map[name].udp_flows = 0;
+        stats_map[name].tcp_flows = 0;
+        stats_map[name].icmp_flows = 0;
 
 
         for (auto& iter : stats.src_bytes_per_inter)
@@ -246,6 +258,22 @@ void IntervalDetectorEventHandler::CalcUCL(int window, int interval, int num_sig
             sum_src_count += iter;
         }
 
+        for (auto& iter : stats.udp_flows_per_inter)
+        {
+            sum_udp_flows += iter;
+        }
+
+        for (auto& iter : stats.tcp_flows_per_inter)
+        {
+            sum_tcp_flows += iter;
+        }
+
+        for (auto& iter : stats.icmp_flows_per_inter)
+        {
+            sum_icmp_flows += iter;
+        }
+
+
         if(counter == 0)
         {
             continue;
@@ -257,6 +285,9 @@ void IntervalDetectorEventHandler::CalcUCL(int window, int interval, int num_sig
         avg_dst_packets = sum_dst_packets / counter;
         avg_dst_count = sum_dst_count / counter;
         avg_src_count = sum_src_count /counter;
+        avg_udp_flows = sum_udp_flows / counter;
+        avg_tcp_flows = sum_tcp_flows / counter;
+        avg_icmp_flows = sum_icmp_flows / counter;
 
         double dev_src_bytes = 0.0;
         double dev_src_packets = 0.0;
@@ -264,6 +295,9 @@ void IntervalDetectorEventHandler::CalcUCL(int window, int interval, int num_sig
         double dev_dst_packets = 0.0;
         double dev_dst_count = 0.0;
         double dev_src_count = 0.0;
+        double dev_udp_flows = 0.0;
+        double dev_tcp_flows = 0.0;
+        double dev_icmp_flows = 0.0;
 
         for (auto& iter : stats.src_bytes_per_inter)
         {
@@ -301,6 +335,24 @@ void IntervalDetectorEventHandler::CalcUCL(int window, int interval, int num_sig
         
         }
 
+        for (auto& iter : stats.udp_flows_per_inter)
+        {
+            dev_udp_flows += (iter - avg_udp_flows) * (iter - avg_udp_flows);
+        
+        }
+
+        for (auto& iter : stats.tcp_flows_per_inter)
+        {
+            dev_tcp_flows += (iter - avg_tcp_flows) * (iter - avg_tcp_flows);
+        
+        }
+
+        for (auto& iter : stats.icmp_flows_per_inter)
+        {
+            dev_icmp_flows += (iter - avg_icmp_flows) * (iter - avg_icmp_flows);
+        
+        }
+
         double varc_src_bytes = dev_src_bytes/counter;
         double std_dev_src_bytes = sqrt(varc_src_bytes); 
         double varc_src_packets = dev_src_packets/counter;
@@ -313,6 +365,12 @@ void IntervalDetectorEventHandler::CalcUCL(int window, int interval, int num_sig
         double std_dev_dst_count = sqrt(varc_dst_count);
         double varc_src_count = dev_src_count/counter;
         double std_dev_src_count = sqrt(varc_src_count);
+        double varc_udp_flows = dev_udp_flows/counter;
+        double std_dev_udp_flows = sqrt(varc_udp_flows);
+        double varc_tcp_flows = dev_tcp_flows/counter;
+        double std_dev_tcp_flows = sqrt(varc_tcp_flows);
+        double varc_icmp_flows = dev_icmp_flows/counter;
+        double std_dev_icmp_flows = sqrt(varc_icmp_flows);
 
         thresholds_map[name].src_pkt_thresh = avg_src_packets + (num_sigma * std_dev_src_packets);
         thresholds_map[name].src_bytes_thresh = avg_src_bytes + (num_sigma * std_dev_src_bytes);
@@ -320,6 +378,9 @@ void IntervalDetectorEventHandler::CalcUCL(int window, int interval, int num_sig
         thresholds_map[name].dst_bytes_thresh = avg_dst_bytes + (num_sigma * std_dev_dst_bytes);
         thresholds_map[name].dst_count_thresh = avg_dst_count + (num_sigma * std_dev_dst_count);
         thresholds_map[name].src_count_thresh = avg_src_count + (num_sigma * std_dev_src_count);
+        thresholds_map[name].udp_flows_thresh = avg_udp_flows + (num_sigma * std_dev_udp_flows);
+        thresholds_map[name].tcp_flows_thresh = avg_tcp_flows + (num_sigma * std_dev_tcp_flows);
+        thresholds_map[name].icmp_flows_thresh = avg_icmp_flows + (num_sigma * std_dev_icmp_flows);
     }
 
     stats_map.clear();
@@ -343,6 +404,64 @@ string IntervalDetectorEventHandler::convertSecondsToDateTime(long seconds) {
     strftime(buffer, 80, "%Y-%m-%d %H:%M:%S", timeinfo);
 
     return string(buffer);
+}
+
+/**
+ * @brief Queues an event based on the given parameters and the thresholds map.
+ * 
+ * This function checks if the given name exists in the stats_map and the thresholds_map. If the name exists and the from parameter is true and the to parameter is false, it checks if the udp_flows, tcp_flows, or icmp_flows for the name in the stats_map exceed their respective thresholds in the thresholds_map. If any of the flows exceed their threshold, it queues the corresponding event.
+ * 
+ * @param name The name of the group to check.
+ * @param from The from flag for the event.
+ * @param to The to flag for the event.
+ */
+void IntervalDetectorEventHandler::queueEvent(string name, bool from, bool to) {
+    if(from and !to)
+    {
+        if(stats_map[name].udp_flows > thresholds_map[name].udp_flows_thresh)
+        {
+            DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_FROM_UDP);
+            attack_udp = true;
+        }
+        else if(stats_map[name].tcp_flows > thresholds_map[name].tcp_flows_thresh)
+        {
+            DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_FROM_TCP);
+            attack_tcp = true;
+        }
+        else if(stats_map[name].icmp_flows > thresholds_map[name].icmp_flows_thresh)
+        {
+            DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_FROM_ICMP);
+            attack_icmp = true;
+        }
+        else
+        {
+            DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_FROM_OTHERS);
+            attack_others = true;
+        }
+    }
+    else if(!from and to)
+    {
+        if(stats_map[name].udp_flows > thresholds_map[name].udp_flows_thresh)
+        {
+            DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_TO_UDP);
+            attack_udp = true;
+        }
+        else if(stats_map[name].tcp_flows > thresholds_map[name].tcp_flows_thresh)
+        {
+            DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_TO_TCP);
+            attack_tcp = true;
+        }
+        else if(stats_map[name].icmp_flows > thresholds_map[name].icmp_flows_thresh)
+        {
+            DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_TO_ICMP);
+            attack_icmp = true;
+        }
+        else
+        {
+            DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_TO_OTHERS);
+            attack_others = true;
+        }
+    }
 }
 
 /**
@@ -372,6 +491,16 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
         return;
     }
 
+    uint8_t proto = 0;
+
+    if(p->is_ip())
+        proto = flow->ip_proto;
+    else if(p->is_tcp())
+        proto = PROTO_TCP;
+    else if(p->is_udp())
+        proto = PROTO_UDP;
+    else if(p->is_icmp())
+        proto = PROTO_ICMP;
 
     char cli_ip_str[INET6_ADDRSTRLEN], srv_ip_str[INET6_ADDRSTRLEN];
     flow->client_ip.ntop(cli_ip_str, sizeof(cli_ip_str));
@@ -478,6 +607,9 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                 stats_map[name].dst_bytes_per_inter.push_back(stats_map[name].dst_bytes);
                 stats_map[name].dst_count_per_inter.push_back(stats_map[name].dst_count);
                 stats_map[name].src_count_per_inter.push_back(stats_map[name].src_count);
+                stats_map[name].udp_flows_per_inter.push_back(stats_map[name].udp_flows);
+                stats_map[name].tcp_flows_per_inter.push_back(stats_map[name].tcp_flows);
+                stats_map[name].icmp_flows_per_inter.push_back(stats_map[name].icmp_flows);
             }
 
             stats_map[name].src_pkts = 0;
@@ -486,6 +618,9 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
             stats_map[name].dst_bytes = 0;
             stats_map[name].dst_count = 0;
             stats_map[name].src_count = 0;
+            stats_map[name].udp_flows = 0;
+            stats_map[name].tcp_flows = 0;
+            stats_map[name].icmp_flows = 0;
         }
         
         DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_INTERVAL); 
@@ -493,23 +628,101 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
         for (auto it = interval_flows.begin(); it != interval_flows.end(); ) 
         {
             if (find(attack_src_ips.begin(), attack_src_ips.end(), it->src_ip) != attack_src_ips.end()) {
-                
-                ostringstream ss;
-                ss << static_cast<unsigned>(it->proto) << ", " << it->data[0] << ", " << it->data[1] << ", " << it->data[2] << ", " << it->data[3] << ", 1"<< endl;
-                if (!write_to_file(ss.str())) {
-                    LogMessage("%s", ss.str().c_str());
+                if(it->proto == PROTO_UDP and attack_udp)
+                {
+                    ostringstream ss;
+                    ss << static_cast<unsigned>(it->proto) << ", " << it->data[0] << ", " << it->data[1] << ", " << it->data[2] << ", " << it->data[3] << ", 1"<< endl;
+                    if (!write_to_file(ss.str())) {
+                        LogMessage("%s", ss.str().c_str());
+                    }
+                    it = interval_flows.erase(it);
                 }
-                it = interval_flows.erase(it);
+                else if(it->proto == PROTO_TCP and attack_tcp)
+                {
+                    ostringstream ss;
+                    ss << static_cast<unsigned>(it->proto) << ", " << it->data[0] << ", " << it->data[1] << ", " << it->data[2] << ", " << it->data[3] << ", 1"<< endl;
+                    if (!write_to_file(ss.str())) {
+                        LogMessage("%s", ss.str().c_str());
+                    }
+                    it = interval_flows.erase(it);
+                }
+                else if(it->proto == PROTO_ICMP and attack_icmp)
+                {
+                    ostringstream ss;
+                    ss << static_cast<unsigned>(it->proto) << ", " << it->data[0] << ", " << it->data[1] << ", " << it->data[2] << ", " << it->data[3] << ", 1"<< endl;
+                    if (!write_to_file(ss.str())) {
+                        LogMessage("%s", ss.str().c_str());
+                    }
+                    it = interval_flows.erase(it);
+                }
+                else if(attack_others and it->proto != PROTO_UDP and it->proto != PROTO_TCP and it->proto != PROTO_ICMP)
+                {
+                    ostringstream ss;
+                    ss << static_cast<unsigned>(it->proto) << ", " << it->data[0] << ", " << it->data[1] << ", " << it->data[2] << ", " << it->data[3] << ", 1"<< endl;
+                    if (!write_to_file(ss.str())) {
+                        LogMessage("%s", ss.str().c_str());
+                    }
+                    it = interval_flows.erase(it);
+                }
+                else
+                {
+                    ostringstream ss;
+                    ss << static_cast<unsigned>(it->proto) << ", " << it->data[0] << ", " << it->data[1] << ", " << it->data[2] << ", " << it->data[3] << ", 0"<< endl;
+                    if (!write_to_file(ss.str())) {
+                        LogMessage("%s", ss.str().c_str());
+                    }
+                    it = interval_flows.erase(it);
+                
+                }
             }
             else if (find(attack_dst_ips.begin(), attack_dst_ips.end(), it->dst_ip) != attack_dst_ips.end()) {
              
-                ostringstream ss;
-                
-                ss << static_cast<unsigned>(it->proto) << ", " << it->data[0] << ", " << it->data[1] << ", " << it->data[2] << ", " << it->data[3] << ", 1"<< endl;
-                if (!write_to_file(ss.str())) {
-                    LogMessage("%s", ss.str().c_str());
+                if(it->proto == PROTO_UDP and attack_udp)
+                {
+                    ostringstream ss;
+                    ss << static_cast<unsigned>(it->proto) << ", " << it->data[0] << ", " << it->data[1] << ", " << it->data[2] << ", " << it->data[3] << ", 1"<< endl;
+                    if (!write_to_file(ss.str())) {
+                        LogMessage("%s", ss.str().c_str());
+                    }
+                    it = interval_flows.erase(it);
                 }
-                it = interval_flows.erase(it);
+                else if(it->proto == PROTO_TCP and attack_tcp)
+                {
+                    ostringstream ss;
+                    ss << static_cast<unsigned>(it->proto) << ", " << it->data[0] << ", " << it->data[1] << ", " << it->data[2] << ", " << it->data[3] << ", 1"<< endl;
+                    if (!write_to_file(ss.str())) {
+                        LogMessage("%s", ss.str().c_str());
+                    }
+                    it = interval_flows.erase(it);
+                }
+                else if(it->proto == PROTO_ICMP and attack_icmp)
+                {
+                    ostringstream ss;
+                    ss << static_cast<unsigned>(it->proto) << ", " << it->data[0] << ", " << it->data[1] << ", " << it->data[2] << ", " << it->data[3] << ", 1"<< endl;
+                    if (!write_to_file(ss.str())) {
+                        LogMessage("%s", ss.str().c_str());
+                    }
+                    it = interval_flows.erase(it);
+                }
+                else if(attack_others)
+                {
+                    ostringstream ss;
+                    ss << static_cast<unsigned>(it->proto) << ", " << it->data[0] << ", " << it->data[1] << ", " << it->data[2] << ", " << it->data[3] << ", 1"<< endl;
+                    if (!write_to_file(ss.str())) {
+                        LogMessage("%s", ss.str().c_str());
+                    }
+                    it = interval_flows.erase(it);
+                }
+                else
+                {
+                    ostringstream ss;
+                    ss << static_cast<unsigned>(it->proto) << ", " << it->data[0] << ", " << it->data[1] << ", " << it->data[2] << ", " << it->data[3] << ", 0"<< endl;
+                    if (!write_to_file(ss.str())) {
+                        LogMessage("%s", ss.str().c_str());
+                    }
+                    it = interval_flows.erase(it);
+                }
+
             } else {
                 ostringstream ss;
                 ss << static_cast<unsigned>(it->proto) << ", " << it->data[0] << ", " << it->data[1] << ", " << it->data[2] << ", " << it->data[3] << ", 0"<< endl;
@@ -519,11 +732,20 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                 it = interval_flows.erase(it);
             }
         }
+
+        cout << "Interval: " << convertSecondsToDateTime(interval_start_time) << " - " << convertSecondsToDateTime(interval_start_time+config.interval) << endl;
+        cout<< "udp: " << attack_udp << " tcp: " << attack_tcp << " icmp: " << attack_icmp << " others: " << attack_others << endl;
+        cout<<endl;
+
         attack_dst_ips.clear();
         attack_src_ips.clear();
         interval_flows.clear();
-        
         interval_flows.clear();
+        attack_udp = false;
+        attack_tcp = false;
+        attack_icmp = false;
+        attack_others = false;
+    
         interval_start_time +=config.interval;
     }
     stats_mutex.unlock();
@@ -547,6 +769,18 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                 stats_map[name].src_pkts += flow->flowstats.client_pkts;
                 stats_map[name].src_bytes += flow->flowstats.client_bytes;
                 stats_map[name].src_count++;
+                if(proto == PROTO_UDP)
+                {
+                    stats_map[name].udp_flows++;
+                }
+                else if(proto == PROTO_TCP)
+                {
+                    stats_map[name].tcp_flows++;
+                }
+                else if(proto == PROTO_ICMP)
+                {
+                    stats_map[name].icmp_flows++;
+                }
 
                 src_bytes = flow->flowstats.client_bytes;
                 src_pkts = flow->flowstats.client_pkts;
@@ -563,7 +797,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                         if (it == attack_src_ips.end()) {
                             attack_src_ips.push_back(name);
                         }
-                        DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_FROM);
+                        queueEvent(name, true, false);
                     }
                 }
                 else if(config.load_model)
@@ -576,7 +810,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                         if (it == attack_src_ips.end()) {
                             attack_src_ips.push_back(name);
                         }
-                        DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_FROM);
+                        queueEvent(name, true, false);
                     }
                 }
                 found = true;
@@ -591,7 +825,18 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
             stats_map[to_string(asn_client)].src_pkts += flow->flowstats.client_pkts;
             stats_map[to_string(asn_client)].src_bytes += flow->flowstats.client_bytes;
             stats_map[to_string(asn_client)].src_count++;
-
+            if(proto == PROTO_UDP)
+            {
+                stats_map[to_string(asn_client)].udp_flows++;
+            }
+            else if(proto == PROTO_TCP)
+            {
+                stats_map[to_string(asn_client)].tcp_flows++;
+            }
+            else if(proto == PROTO_ICMP)
+            {
+                stats_map[to_string(asn_client)].icmp_flows++;
+            }
 
             src_bytes = flow->flowstats.client_bytes;
             src_pkts = flow->flowstats.client_pkts;
@@ -607,7 +852,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                     if (it == attack_src_ips.end()) {
                         attack_src_ips.push_back(to_string(asn_client));
                     }
-                    DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_FROM);
+                    queueEvent(to_string(asn_client), true, false);
                 }
             }
             else if(config.load_model)
@@ -620,7 +865,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                     if (it == attack_src_ips.end()) {
                         attack_src_ips.push_back(to_string(asn_client));
                     }
-                    DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_FROM);
+                    queueEvent(to_string(asn_client), true, false);
                 }
             }
         }
@@ -629,6 +874,18 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
             stats_map[cli_ip_str].src_pkts += flow->flowstats.client_pkts;
             stats_map[cli_ip_str].src_bytes += flow->flowstats.client_bytes;
             stats_map[cli_ip_str].src_count++;
+            if(proto == PROTO_UDP)
+            {
+                stats_map[cli_ip_str].udp_flows++;
+            }
+            else if(proto == PROTO_TCP)
+            {
+                stats_map[cli_ip_str].tcp_flows++;
+            }
+            else if(proto == PROTO_ICMP)
+            {
+                stats_map[cli_ip_str].icmp_flows++;
+            }
 
             src_bytes = flow->flowstats.client_bytes;
             src_pkts = flow->flowstats.client_pkts;
@@ -645,7 +902,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                     if (it == attack_src_ips.end()) {
                         attack_src_ips.push_back(cli_ip_str);
                     }
-                    DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_FROM);
+                    queueEvent(cli_ip_str, true, false);
                 }
             }
             else if(config.load_model)
@@ -658,7 +915,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                     if (it == attack_src_ips.end()) {
                         attack_src_ips.push_back(cli_ip_str);
                     }
-                    DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_FROM);          
+                    queueEvent(cli_ip_str, true, false);          
                 }
             }
         }
@@ -684,6 +941,18 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                 stats_map[name].dst_pkts += flow->flowstats.server_pkts;
                 stats_map[name].dst_bytes += flow->flowstats.server_bytes;
                 stats_map[name].dst_count++;
+                if(proto == PROTO_UDP)
+                {
+                    stats_map[name].udp_flows++;
+                }
+                else if(proto == PROTO_TCP)
+                {
+                    stats_map[name].tcp_flows++;
+                }
+                else if(proto == PROTO_ICMP)
+                {
+                    stats_map[name].icmp_flows++;
+                }
 
                 dst_bytes = flow->flowstats.server_bytes;
                 dst_pkts = flow->flowstats.server_pkts;
@@ -700,7 +969,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                         if (it == attack_dst_ips.end()) {
                             attack_dst_ips.push_back(name);
                         }
-                        DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_TO);
+                        queueEvent(name, false, true);
                     }
                 }
                 else if(config.load_model)
@@ -713,14 +982,13 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                         if (it == attack_dst_ips.end()) {
                             attack_dst_ips.push_back(name);
                         }
-                        DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_TO);
+                        queueEvent(name, false, true);
                     }
                 }
                 found = true;
                 break;
             }
         }
-        
     }
     if (!found)
     { 
@@ -729,6 +997,19 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
             stats_map[to_string(asn_server)].dst_pkts += flow->flowstats.server_pkts;
             stats_map[to_string(asn_server)].dst_bytes += flow->flowstats.server_bytes;
             stats_map[to_string(asn_server)].dst_count++;
+            
+            if(proto == PROTO_UDP)
+            {
+                stats_map[to_string(asn_server)].udp_flows++;
+            }
+            else if(proto == PROTO_TCP)
+            {
+                stats_map[to_string(asn_server)].tcp_flows++;
+            }
+            else if(proto == PROTO_ICMP)
+            {
+                stats_map[to_string(asn_server)].icmp_flows++;
+            }
 
             dst_bytes = flow->flowstats.server_bytes;
             dst_pkts = flow->flowstats.server_pkts;
@@ -744,7 +1025,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                     if (it == attack_dst_ips.end()) {
                         attack_dst_ips.push_back(to_string(asn_server));
                     }
-                    DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_TO);
+                    queueEvent(to_string(asn_server), false, true);
                 }
             }
             else if(config.load_model)
@@ -757,7 +1038,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                     if (it == attack_dst_ips.end()) {
                         attack_dst_ips.push_back(to_string(asn_server));
                     }
-                    DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_TO);
+                    queueEvent(to_string(asn_server), false, true);
                 }
             }
         }
@@ -766,6 +1047,18 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
             stats_map[srv_ip_str].dst_pkts += flow->flowstats.server_pkts;
             stats_map[srv_ip_str].dst_bytes += flow->flowstats.server_bytes;
             stats_map[srv_ip_str].dst_count++;
+            if(proto == PROTO_UDP)
+            {
+                stats_map[srv_ip_str].udp_flows++;
+            }
+            else if(proto == PROTO_TCP)
+            {
+                stats_map[srv_ip_str].tcp_flows++;
+            }
+            else if(proto == PROTO_ICMP)
+            {
+                stats_map[srv_ip_str].icmp_flows++;
+            }
 
             dst_bytes = flow->flowstats.server_bytes;
             dst_pkts = flow->flowstats.server_pkts;
@@ -781,7 +1074,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                     if (it == attack_dst_ips.end()) {
                         attack_dst_ips.push_back(srv_ip_str);
                     }
-                    DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_TO);
+                    queueEvent(srv_ip_str, false, true);
                 }
             }
             else if(config.load_model)
@@ -794,22 +1087,11 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                     if (it == attack_dst_ips.end()) {
                         attack_dst_ips.push_back(srv_ip_str);
                     }
-                    DetectionEngine::queue_event(INTERVAL_DETECTOR_GID, INTERVAL_DETECTOR_TO);
+                    queueEvent(srv_ip_str, false, true);
                 }
             }
         }
     }
-
-    uint8_t proto = 0;
-
-    if(p->is_ip())
-        proto = flow->ip_proto;
-    else if(p->is_tcp())
-        proto = PROTO_TCP;
-    else if(p->is_udp())
-        proto = PROTO_UDP;
-    else if(p->is_icmp())
-        proto = PROTO_ICMP;
 
     if(!config.training)
         interval_flows.push_back({src_name, dst_name, proto, {src_bytes, src_pkts, dst_bytes, dst_pkts}});

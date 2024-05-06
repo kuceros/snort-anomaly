@@ -285,6 +285,10 @@ public:
 
     std::vector<sid_stats> sidStats;
 
+    bool udp = false;
+    bool tcp = false;
+    bool icmp = false;
+
 };
 
 
@@ -539,6 +543,12 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
                 js.put("detection", "FlowInterval");
                 js.put("start_time", convertSecondsToDateTime(inter_start));
                 js.put("end_time", convertSecondsToDateTime(p->pkth->ts.tv_sec));
+                if(udp)
+                    js.put("proto", "UDP");
+                if(tcp)
+                    js.put("proto", "TCP");
+                if(icmp)
+                    js.put("proto", "ICMP");
             }
             if(!srcVec.empty())
             {
@@ -618,8 +628,21 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
             inter_start = p->pkth->ts.tv_sec;
         }
         
-        if (event.sig_info->sid == 2)
+        if (event.sig_info->sid == 2 or event.sig_info->sid == 3 or event.sig_info->sid == 4 or event.sig_info->sid == 5)
         {
+            if(event.sig_info->sid == 2)
+            {
+                udp = true;
+            }
+            if(event.sig_info->sid == 3)
+            {
+                tcp = true;
+            }
+            if(event.sig_info->sid == 4)
+            {
+                icmp = true;
+            }
+
             bool found = false;
             for (auto& it : default_ips)
             {
@@ -731,8 +754,21 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
             }
         }
 
-        if (event.sig_info->sid == 3)
+        if (event.sig_info->sid == 6 or event.sig_info->sid == 7 or event.sig_info->sid == 8 or event.sig_info->sid == 9)
         {
+            if(event.sig_info->sid == 6)
+            {
+                udp = true;
+            }
+            if(event.sig_info->sid == 7)
+            {
+                tcp = true;
+            }
+            if(event.sig_info->sid == 8)
+            {
+                icmp = true;
+            }
+
             bool found = false;
             for (auto& it : default_ips)
             {
@@ -875,90 +911,6 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
             }
         }
     }
-    /*if(event.sig_info->gid ==129 and (ml or interval))
-    {
-        std::ostringstream ss;
-        JsonStream js(ss);
-        js.open();
-        js.put("detection", "TCP-error");
-        js.put("timestamp", convertSecondsToDateTime(p->pkth->ts.tv_sec));
-        if(p->is_ip())
-            js.put("proto", get_proto_str(p->flow->ip_proto));
-        else if(p->is_tcp())
-            js.put("proto", "TCP");
-        else if(p->is_udp())
-            js.put("proto", "UDP");
-        else if(p->is_icmp())
-            js.put("proto", "ICMP");
-            
-        bool found = false;
-
-        //client
-        for (auto& it : default_ips)
-        {
-            string name = it.first;
-            std::vector<const snort::SfCidr*> ip_addresses = it.second;
-            for (auto& ip : ip_addresses)
-            {
-                int comp = ip->contains(&cli_ip);
-                if(comp == SFIP_CONTAINS and name!="EXTERNAL_NET")
-                {
-                    js.put("src", name);
-                    found = true;
-                }
-            }
-        }
-        if(!found)
-        {
-            if(asn_client>0)
-            {
-                js.put("src", asn_client);
-            }
-            else
-            {
-                js.put("src", cli_ip_str);
-            }
-        }
-        //server
-        found = false;
-        for (auto& it : default_ips)
-        {
-            string name = it.first;
-            std::vector<const snort::SfCidr*> ip_addresses = it.second;
-            for (auto& ip : ip_addresses)
-            {
-                int comp = ip->contains(&srv_ip);
-                if(comp == SFIP_CONTAINS and name!="EXTERNAL_NET")
-                {
-                    js.put("dst", name);
-                    found = true;
-                }
-            }
-        }
-        if(!found)
-        {
-            if(asn_server>0)
-            {
-                js.put("dst", asn_server);
-            }
-            else
-            {
-                js.put("dst", srv_ip_str);
-            }
-        }
-        js.close();
-        std::ofstream file_stream;
-        file_stream.open("alert_dos_json.txt", std::ios_base::app);
-
-        if (file_stream.is_open()) {
-            file_stream << ss.str();
-            file_stream.close();
-        }
-        else {
-            std::cerr << "Error opening file" << std::endl;
-        }
-    }*/
-    
 }
 
 
