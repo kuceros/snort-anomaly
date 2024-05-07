@@ -43,10 +43,6 @@ class Flow;
 struct Packet;
 }
 
-struct ScalerInfo {
-    std::vector<float> min_values;
-    std::vector<float> max_values;
-};
 
 class FlowMLEventHandler : public snort::DataHandler
 {

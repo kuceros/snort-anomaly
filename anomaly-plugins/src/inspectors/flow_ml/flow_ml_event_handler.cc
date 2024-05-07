@@ -68,7 +68,7 @@ ScalerInfo FlowMLEventHandler::loadScalerInfo(const std::string& filename) {
 
     std::ifstream file(filename, std::ios::binary);
     if (!file) {
-        std::cerr << "Error opening file." << std::endl;
+        ErrorMessage("Failed to load scaler file\n");
         return scaler_info;
     }
 
@@ -148,10 +148,9 @@ void FlowMLEventHandler::handle(DataEvent& event, Flow* flow)
     else if(p->is_icmp())
         proto = PROTO_ICMP;
 
-    ScalerInfo scaler_info = loadScalerInfo(config.scaler_file);    
     std::vector<float> new_data = {(float)proto, (float)src_bytes, (float)src_pkts, (float)dst_bytes, (float)dst_pkts};
 
-    std::vector<float> normalized_data = minMaxScaling(new_data, scaler_info.min_values, scaler_info.max_values);
+    std::vector<float> normalized_data = minMaxScaling(new_data, config.scaler_info.min_values, config.scaler_info.max_values);
 
     float output;
     if (!config.classifier.runFlowModel(normalized_data[0], normalized_data[1], normalized_data[2], normalized_data[3], normalized_data[4], output)) {

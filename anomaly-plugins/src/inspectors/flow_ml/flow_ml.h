@@ -35,12 +35,18 @@
 #define FLOW_ML_GID 667
 #define FLOW_ML_ATTACK 1
 
+typedef struct _scaler_info {
+    std::vector<float> min_values;
+    std::vector<float> max_values;
+} ScalerInfo;
+
 struct FlowMLConfig
 {
     std::string model;
     std::string scaler_file;
     float threshold;
     BinaryClassifier classifier;
+    ScalerInfo scaler_info;
 };
 
 #endif

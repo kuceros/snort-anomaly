@@ -38,7 +38,6 @@
 #include "pub_sub/intrinsic_event_ids.h"
 
 #include "detection/signature.h"
-//#include "sfip/sf_ipvar.h"
 
 #include "flow_ml_event_handler.h"
 
@@ -132,17 +131,65 @@ public:
 
     void eval(Packet*) override { }
 
+        /**
+     * @brief Loads scaler information from a file.
+     * 
+     * This function reads scaler information from a file with the given filename. The details of the scaler information and the file format are not provided in the code snippet.
+     * 
+     * @param filename The name of the file from which the scaler information will be loaded.
+     * @return ScalerInfo The loaded scaler information.
+     */
+    ScalerInfo loadScalerInfo(const std::string& filename) {
+        ScalerInfo scaler_info;
+
+        std::ifstream file(filename, std::ios::binary);
+        if (!file) {
+            return scaler_info;
+        }
+
+        uint32_t min_count;
+        file.read(reinterpret_cast<char*>(&min_count), sizeof(min_count));
+
+        std::vector<double> temp_min_values(min_count);
+        file.read(reinterpret_cast<char*>(temp_min_values.data()), min_count * sizeof(double));
+
+        scaler_info.min_values.resize(min_count);
+        for (size_t i = 0; i < min_count; ++i) {
+            scaler_info.min_values[i] = static_cast<float>(temp_min_values[i]);
+        }
+
+        uint32_t max_count;
+        file.read(reinterpret_cast<char*>(&max_count), sizeof(max_count));
+
+        std::vector<double> temp_max_values(max_count);
+        file.read(reinterpret_cast<char*>(temp_max_values.data()), max_count * sizeof(double));
+
+        scaler_info.max_values.resize(max_count);
+        for (size_t i = 0; i < max_count; ++i) {
+            scaler_info.max_values[i] = static_cast<float>(temp_max_values[i]);
+        }
+
+        file.close(); 
+
+        return scaler_info;
+    }
+
+
     bool configure(SnortConfig* sc) override
     {
         assert(config);
         sc->set_run_flags(RUN_FLAG__TRACK_ON_SYN);
 
         if (!config->classifier.buildFlowModel(config->model)) {
-            std::cerr << "Error: Failed to load model." << std::endl;
+            WarningMessage("Failed to build model.\n");
             return false;
         }
     
-
+        config->scaler_info = loadScalerInfo(config->scaler_file);
+        if(config->scaler_info.min_values.empty() or config->scaler_info.max_values.empty()){
+            WarningMessage("Failed to load scaler file.\n");
+            return false;
+        }
         DataBus::subscribe_network(appid_pub_key, AppIdEventIds::ANY_CHANGE, new FlowMLEventHandler(*config));
 
         return true;
