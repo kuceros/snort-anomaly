@@ -55,7 +55,6 @@ typedef struct _group_stats
     uint64_t udp_flows = 0;
     uint64_t tcp_flows = 0;
     uint64_t icmp_flows = 0;
-    uint64_t time = 0;
     std::vector<uint64_t> src_pkts_per_inter;
     std::vector<uint64_t> src_bytes_per_inter;
     std::vector<uint64_t> dst_pkts_per_inter;
