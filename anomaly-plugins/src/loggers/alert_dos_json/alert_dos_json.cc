@@ -837,7 +837,10 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
             js.put("detection", "FlowML");
             js.put("timestamp", convertSecondsToDateTime(p->pkth->ts.tv_sec));
             if(p->is_ip())
-                js.put("proto", get_proto_str(p->flow->ip_proto));
+            {
+                if(get_proto_str(p->flow->ip_proto)!="0")
+                    js.put("proto", get_proto_str(p->flow->ip_proto));
+            }
             else if(p->is_tcp())
                 js.put("proto", "TCP");
             else if(p->is_udp())
