@@ -132,10 +132,8 @@ private:
         return false;
     }
 
-    std::vector<float> minMaxScaling(const std::vector<float>& data, const std::vector<float>& minVals, const std::vector<float>& maxVals);
     void saveModel(std::map<std::string, GroupThresholds>& thresholds_map, int interval, const std::string& filename);
     std::pair<std::map<std::string, GroupThresholds>, int> loadModel(const std::string& filename);
-    float minMaxNormalize(int value, int max_val);
     void CalcUCL(int window, int interval, int num_sigma);
     std::string convertSecondsToDateTime(long seconds);
     bool stringContains(const std::string& mainStr, const std::string& subStr);

@@ -41,22 +41,6 @@ using namespace snort;
 using namespace std;
 
 /**
- * @brief Scales the given data using min-max normalization.
- * 
- * @param data The data to be scaled.
- * @param minVals The minimum values for each feature in the data.
- * @param maxVals The maximum values for each feature in the data.
- * @return vector<float> The scaled data.
- */
-vector<float> IntervalDetectorEventHandler::minMaxScaling(const vector<float>& data, const vector<float>& minVals, const vector<float>& maxVals) {
-    vector<float> scaledData(data.size());
-    for (size_t i = 0; i < data.size(); ++i) {
-        scaledData[i] = (data[i] - minVals[i]) / (maxVals[i] - minVals[i]);
-    }
-    return scaledData;
-}
-
-/**
  * @brief Saves the given thresholds map to a file.
  * 
  * @param thresholds_map The thresholds map to be saved.
@@ -194,20 +178,6 @@ pair<map<string, GroupThresholds>, int> IntervalDetectorEventHandler::loadModel(
     infile.close();
 
     return {thresholds_map, interval};
-}
-
-/**
- * @brief Normalizes a given value using min-max normalization.
- * 
- * This function subtracts the minimum value (0 in this case) from the given value and divides the result by the difference between the maximum value and the minimum value. The result is a float between 0 and 1.
- * 
- * @param value The value to be normalized.
- * @param max_val The maximum possible value.
- * @return float The normalized value.
- */
-float IntervalDetectorEventHandler::minMaxNormalize(int value, int max_val) {
-    float normalized_value = (float)(value - 0) / (max_val - 0);
-    return normalized_value;
 }
 
 /**
@@ -776,7 +746,6 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
 
         attack_dst_ips.clear();
         attack_src_ips.clear();
-        interval_flows.clear();
         interval_flows.clear();
         attack_udp = false;
         attack_tcp = false;
