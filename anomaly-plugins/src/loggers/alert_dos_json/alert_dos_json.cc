@@ -131,7 +131,6 @@ static const Parameter s_params[] =
 {
     { "mapping", Parameter::PT_STRING, nullptr, "false",
       "csv file of rule-mitre mapping" },
-
     { "file", Parameter::PT_BOOL, nullptr, "false",
       "output to " F_NAME " instead of stdout" },
     { "db", Parameter::PT_STRING, nullptr, nullptr,
@@ -619,7 +618,10 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
             else {
                 std::cerr << "Error opening file" << std::endl;
             }
-        
+
+            icmp = false;
+            tcp = false;
+            udp = false;
             srcVec.clear();
             dstVec.clear();
             sidStats.clear();
