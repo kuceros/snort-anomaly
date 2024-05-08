@@ -154,7 +154,7 @@ void FlowMLEventHandler::handle(DataEvent& event, Flow* flow)
 
     float output;
     if (!config.classifier.runFlowModel(normalized_data[0], normalized_data[1], normalized_data[2], normalized_data[3], normalized_data[4], output)) {
-        std::cerr << "Failed to run inference." << std::endl;
+        WarningMessage("Failed to run inference.\n");
         return;
     }
 
@@ -162,8 +162,7 @@ void FlowMLEventHandler::handle(DataEvent& event, Flow* flow)
     
     if(config.threshold)
         threshold = (float)config.threshold;
-
-    if(output > threshold){
+        
+    if(output > threshold)
         DetectionEngine::queue_event(FLOW_ML_GID, FLOW_ML_ATTACK);
-    }
 }
