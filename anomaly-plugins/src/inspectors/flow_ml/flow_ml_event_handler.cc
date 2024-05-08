@@ -154,7 +154,7 @@ void FlowMLEventHandler::handle(DataEvent& event, Flow* flow)
 
     float output;
     if (!config.classifier.runFlowModel(normalized_data[0], normalized_data[1], normalized_data[2], normalized_data[3], normalized_data[4], output)) {
-        WarningMessage("Failed to run inference.\n");
+        WarningMessage("Failed to run model.\n");
         return;
     }
 
