@@ -539,7 +539,7 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
             if(!srcVec.empty() or !dstVec.empty())
             {
                 js.open();
-                js.put("detection", "FlowInterval");
+                js.put("detection", "IntervalDetector");
                 js.put("start_time", convertSecondsToDateTime(inter_start));
                 js.put("end_time", convertSecondsToDateTime(p->pkth->ts.tv_sec));
                 if(udp)
@@ -551,20 +551,16 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
             }
             if(!srcVec.empty())
             {
-                js.open("attack src");
                 for (const auto& ip : srcPrint) {
 
                     js.put("src", ip);
                 }
-                js.close();
             }
             if(!dstVec.empty())
             {
-                js.open("attack dst");
                 for (const auto& ip : dstPrint) {
                     js.put("dst", ip);
                 }
-                js.close();
             }
             if(!sidStats.empty())
             {
