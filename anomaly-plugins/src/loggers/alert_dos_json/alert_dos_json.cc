@@ -474,13 +474,14 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
         {
             if(asn_server>0)
             {
-                group_cli = to_string(asn_server);
+                group_srv = to_string(asn_server);
             }
             else
             {
-                group_cli = srv_ip_str;
+                group_srv = srv_ip_str;
             }
         }
+
         if(p->has_ip() and containsIP(srcVec, group_cli))
         {
             auto it = std::find_if(sidStats.begin(), sidStats.end(), [&](const sid_stats& entry) {
@@ -515,7 +516,7 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
         }
     }
     
-    if(event.sig_info->gid ==666 and interval)
+    if(event.sig_info->gid == 666 and interval)
     {
         if(event.sig_info->sid == 1)
         {

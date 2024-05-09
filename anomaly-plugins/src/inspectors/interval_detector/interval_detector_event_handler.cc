@@ -564,8 +564,6 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
             CalcUCL(config.window, config.interval, config.num_sigma);
             saveModel(thresholds_map, config.interval, config.model);
             model_saved = true;
-            stats_mutex.unlock();
-            return;
         }
         
     }
