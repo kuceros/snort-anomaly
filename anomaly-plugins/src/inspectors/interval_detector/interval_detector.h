@@ -90,7 +90,4 @@ struct vartable_t
     uint32_t id;
 };
 
-
-
-
 #endif

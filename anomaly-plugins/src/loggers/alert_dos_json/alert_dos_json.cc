@@ -378,8 +378,8 @@ void DoSJsonLogger::open()
     }
 
     db_status = MMDB_open(db_name.c_str(), MMDB_MODE_MMAP, &my_mmdb);
-    if (db_status != MMDB_SUCCESS) {
-        std::cerr << "Error opening ASN database: " << MMDB_strerror(db_status) << std::endl;
+    if (db_status != MMDB_SUCCESS and strcmp(db_name.c_str(), "") != 0){
+        WarningMessage("%s\n", MMDB_strerror(db_status));
     }
 
 }
@@ -416,9 +416,9 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
             asn_client = getASN(cli_ip_str, my_mmdb);
             asn_server = getASN(srv_ip_str, my_mmdb);
         }
-        else
+        else if(db_status != MMDB_SUCCESS and strcmp(db_name.c_str(), "") != 0)
         {
-            std::cerr << "Error opening ASN database: " << MMDB_strerror(db_status) << std::endl;
+            WarningMessage("%s\n", MMDB_strerror(db_status));
         }
     }
 
@@ -612,7 +612,7 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
                 file_stream.close();
             }
             else {
-                std::cerr << "Error opening file" << std::endl;
+                WarningMessage("%s\n", "Error opening file");
             }
 
             icmp = false;
@@ -908,7 +908,7 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
                 file_stream.close();
             }
             else {
-                std::cerr << "Error opening file" << std::endl;
+                WarningMessage("%s\n", "Error opening file");
             }
         }
     }

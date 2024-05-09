@@ -521,7 +521,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
 
     MMDB_s my_mmdb;
     int status = MMDB_open(config.db_name.c_str(), MMDB_MODE_MMAP, &my_mmdb);
-    if (status != MMDB_SUCCESS) {
+    if (status != MMDB_SUCCESS and strcmp(config.db_name.c_str(), "") != 0){
         WarningMessage("%s\n", MMDB_strerror(status));
     }
     uint32_t asn_client = 0;
