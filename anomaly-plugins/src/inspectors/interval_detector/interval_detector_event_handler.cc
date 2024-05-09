@@ -550,9 +550,10 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
     if (status == MMDB_SUCCESS)
         MMDB_close(&my_mmdb);
 
+    stats_mutex.lock();
     if(config.training)
     {
-        stats_mutex.lock();
+        
         if(train_end_time == 0)
         {
             train_end_time = p->pkth->ts.tv_sec + config.window;
@@ -566,9 +567,9 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
             stats_mutex.unlock();
             return;
         }
-        stats_mutex.unlock();
+        
     }
-
+    stats_mutex.unlock();
     stats_mutex.lock();
     if(window_start_time == 0)
     {
