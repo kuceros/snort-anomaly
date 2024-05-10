@@ -65,7 +65,6 @@ void IntervalDetectorEventHandler::saveModel(map<string, GroupThresholds>& thres
 
         outfile.write(reinterpret_cast<const char*>(&pair.second), sizeof(GroupThresholds));
     }
-    thresholds_map.clear();
     outfile.close();
 }
 
