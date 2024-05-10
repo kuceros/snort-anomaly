@@ -60,7 +60,7 @@ GitHub source: https://github.com/snort3/snort3
     flow_ml =
     {
         model = '<your_path>/Desktop/snort.model', --load ML model
-        threshold = 0.99, --classification threshold
+        threshold = 0.9, --classification threshold
         scaler_file = '<your_path>/scaler_info.bin', --file with data for incoming data normalization
     }
 
