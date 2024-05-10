@@ -37,7 +37,7 @@ GitHub source: https://github.com/snort3/snort3
 </pre>
 
 ## Training FlowML model
-1. Run Snort 3 with *interval_detector* enabled, in which "label_logging" is enabled.
+1. Run Snort 3 with *interval_detector* enabled, in which "file_labels" with file path is enabled.
 2. Run `./create_data.sh "<your_path>/datasets"` which creates labeled flow data from input dataset for training ML model.
 3. Run `python3 train_snort.py`
 4. Output files can be used in FlowML module and set as an input as in the example configuration below...
