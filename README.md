@@ -74,7 +74,7 @@ GitHub source: https://github.com/snort3/snort3
 
 ### Example run
 
-```snort -c "<path_to_snort_lua>/snort.lua" -r "<your_input_pcap>" --plugin-path "<path_to_installed_plugins> -q```
+```snort -c "<path_to_snort_lua>/snort.lua" -r "<your_input_pcap>" --plugin-path "<path_to_installed_plugins>" -q```
 
 
 Example path to plugins: ```"/usr/local/snort/lib/snort/plugins/extra/"```
