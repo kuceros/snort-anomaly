@@ -152,6 +152,20 @@ std::string convertSecondsToDateTime(long seconds) {
     return std::string(buffer);
 }
 
+std::string extractMsg(const std::string& str) {
+    if (str.size() >= 6 && str.substr(0, 3) == "\"\"\"" && str.substr(str.size() - 3) == "\"\"\"") {
+        return str.substr(3, str.size() - 6);
+    }
+    return str;
+}
+
+std::string extractRef(const std::string& str) {
+    if (str.size() >= 2 && str.substr(0, 1) == "\"" && str.substr(str.size() - 1) == "\"") {
+        return str.substr(1, str.size() - 2);
+    }
+    return str;
+}
+
 #define s_help \
     "output event with mitre in json format"
 
@@ -335,7 +349,7 @@ DoSJsonLogger::DoSJsonLogger(DoSJsonModule* m) : file(m->file ? F_NAME : "stdout
             } else {
                 reference = ""; 
             }
-            
+
             Mitre mitre_data;
             mitre_data.classtype = classtype;
             mitre_data.direction = direction;
@@ -348,8 +362,8 @@ DoSJsonLogger::DoSJsonLogger(DoSJsonModule* m) : file(m->file ? F_NAME : "stdout
             mitre_data.T_lat = T_lat;
             mitre_data.TA_out = TA_out;
             mitre_data.T_out = T_out;
-            mitre_data.msg = msg;
-            mitre_data.reference = reference;
+            mitre_data.msg = extractMsg(msg);
+            mitre_data.reference = extractRef(reference);
             rules_map[std::stoi(sid)] = mitre_data;
         }
     }  
@@ -552,16 +566,20 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
             }
             if(!srcVec.empty())
             {
+                js.open("src");
                 for (const auto& ip : srcPrint) {
 
-                    js.put("src", ip);
+                    js.put("group", ip);
                 }
+                js.close();
             }
             if(!dstVec.empty())
             {
+                js.open("dst");
                 for (const auto& ip : dstPrint) {
-                    js.put("dst", ip);
+                    js.put("group", ip);
                 }
+                js.close();
             }
             if(!sidStats.empty())
             {
@@ -866,7 +884,7 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
             {
                 if(asn_client>0)
                 {
-                    js.put("src", asn_client);
+                    js.put("src", to_string(asn_client));
                 }
                 else
                 {
@@ -893,7 +911,7 @@ void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
             {
                 if(asn_server>0)
                 {
-                    js.put("dst", asn_server);
+                    js.put("dst", to_string(asn_server));
                 }
                 else
                 {

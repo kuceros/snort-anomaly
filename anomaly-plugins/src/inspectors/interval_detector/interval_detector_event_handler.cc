@@ -1113,6 +1113,6 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
             syn = true;
     }
 
-    if(!config.training)
+    if(!config.training or model_saved)
         interval_flows.push_back({src_name, dst_name, proto, syn, {src_bytes, src_pkts, dst_bytes, dst_pkts}});
 }
