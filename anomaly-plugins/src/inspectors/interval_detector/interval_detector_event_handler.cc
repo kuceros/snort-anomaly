@@ -695,7 +695,7 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
                     }
                     it = interval_flows.erase(it);
                 }
-                else if(it->proto == PROTO_TCP and attack_tcp and it->tcp_syn)
+                else if(it->proto == PROTO_TCP and attack_tcp)
                 {
                     ostringstream ss;
                     ss << static_cast<unsigned>(it->proto) << ", " << it->data[0] << ", " << it->data[1] << ", " << it->data[2] << ", " << it->data[3] << ", 1"<< endl;
@@ -1103,16 +1103,6 @@ void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
             }
         }
     }
-
-    bool syn = false;
-    if(proto == PROTO_TCP)
-    {
-        char tcpFlags[9];
-        CreateTCPFlagString(p->ptrs.tcph, tcpFlags);
-        if(strcmp(tcpFlags, "******S*") == 0)
-            syn = true;
-    }
-
     if(!config.training or model_saved)
-        interval_flows.push_back({src_name, dst_name, proto, syn, {src_bytes, src_pkts, dst_bytes, dst_pkts}});
+        interval_flows.push_back({src_name, dst_name, proto, {src_bytes, src_pkts, dst_bytes, dst_pkts}});
 }

@@ -66,13 +66,37 @@ class FlowMLModule : public Module
 {
 public:
 
+    /**
+     * @brief Constructor for the FlowMLModule class.
+     * 
+     * This constructor initializes the FlowMLModule with the name, help text, 
+     * and parameters defined in the constants MOD_NAME, s_help, and s_params, respectively.
+     */
     FlowMLModule() : Module(MOD_NAME, s_help, s_params) { }
 
+    /**
+     * @brief Destructor for the FlowMLModule class.
+     * 
+     * This destructor deletes the config object if it exists.
+     */
     ~FlowMLModule() override
     {
         delete config;
     }
 
+    /**
+     * @brief Begins the configuration process for the FlowMLModule.
+     * 
+     * This function checks if the config object exists. 
+     * If it does, the function returns false, indicating that the configuration process cannot begin. 
+     * If the config object does not exist, the function creates a new FlowMLConfig object, 
+     * assigns it to the config pointer, and returns true, indicating that the configuration process can begin.
+     * 
+     * @param char* Unused parameter.
+     * @param int Unused parameter.
+     * @param SnortConfig* Unused parameter.
+     * @return bool True if the configuration process can begin, false otherwise.
+     */
     bool begin(const char*, int, SnortConfig*) override
     {
         if ( config )
@@ -82,6 +106,17 @@ public:
         return true;
     }
 
+    /**
+     * @brief Sets the configuration values based on the provided value.
+     * 
+     * This function checks the name of the provided value and sets the corresponding configuration value based on it. 
+     * If the name is "model", it sets the model configuration value. If the name is "threshold", it sets the threshold configuration value.
+     * 
+     * @param char* Unused parameter.
+     * @param Value& v The value to set.
+     * @param SnortConfig* Unused parameter.
+     * @return bool Always returns true.
+     */
     bool set(const char*, Value& v, SnortConfig*) override
     {
         if (v.is("model") )
@@ -92,14 +127,35 @@ public:
             config->scaler_file = v.get_string();
         return true;
     }
+    /**
+     * @brief Returns the group identifier for the FlowMLModule.
+     * 
+     * This function returns the group identifier for the FlowMLModule, which is FLOW_ML_GID.
+     * 
+     * @return unsigned The group identifier for the FlowMLModule.
+     */
     unsigned get_gid() const override
     { return FLOW_ML_GID; }
 
+    /**
+     * @brief Returns the rules for the FlowMLModule.
+     * 
+     * This function returns the rules for the FlowMLModule, which are defined in the flow_ml_rules array.
+     * 
+     * @return const RuleMap* The rules for the FlowMLModule.
+     */
     const RuleMap* get_rules() const override
     {
         return inter_rules; 
     }
 
+    /**
+     * @brief Returns the configuration data for the FlowMLModule.
+     * 
+     * This function returns the configuration data for the FlowMLModule and sets the config pointer to null.
+     * 
+     * @return FlowMLConfig* The configuration data for the FlowMLModule.
+     */
     FlowMLConfig* get_data()
     {
         FlowMLConfig* temp = config;
@@ -119,22 +175,36 @@ private:
 class FlowMLInspector : public Inspector
 {
 public:
+
+    /**
+     * @brief Constructor for the FlowMLInspector class.
+     * 
+     * This constructor initializes the FlowMLInspector with the data from the provided FlowMLModule. 
+     * It asserts that the config is not null.
+     * 
+     * @param FlowMLModule& mod The module from which to get the data.
+     */
     FlowMLInspector(FlowMLModule& mod)
     {
         config = mod.get_data();
         assert(config);
     }
 
+    /**
+     * @brief Destructor for the FlowMLInspector class.
+     * 
+     * This destructor deletes the config object if it exists.
+     */
     ~FlowMLInspector() override
     {
         delete config; }
 
     void eval(Packet*) override { }
 
-        /**
+    /**
      * @brief Loads scaler information from a file.
      * 
-     * This function reads scaler information from a file with the given filename. The details of the scaler information and the file format are not provided in the code snippet.
+     * This function reads scaler information from a file with the given filename. 
      * 
      * @param filename The name of the file from which the scaler information will be loaded.
      * @return ScalerInfo The loaded scaler information.
@@ -174,7 +244,17 @@ public:
         return scaler_info;
     }
 
-
+    /**
+     * @brief Configures the SnortConfig object.
+     * 
+     * This function asserts that the config is not null, sets the run flags on the SnortConfig object, and attempts to build the flow model. 
+     * If the flow model cannot be built, it prints a warning message and returns false. 
+     * It then loads the scaler information from the scaler file and checks if the min_values and max_values are empty. 
+     * If they are, it prints a warning message and returns false. Finally, it subscribes to the network data bus and returns true.
+     * 
+     * @param sc The SnortConfig object to configure.
+     * @return bool True if the configuration was successful, false otherwise.
+     */
     bool configure(SnortConfig* sc) override
     {
         assert(config);

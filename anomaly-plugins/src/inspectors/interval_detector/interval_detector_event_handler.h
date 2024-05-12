@@ -84,7 +84,6 @@ typedef struct _flow_info {
     std::string src_ip;
     std::string dst_ip;
     uint8_t proto;
-    bool tcp_syn;
     std::vector<int> data;
 } FlowInfo;
 
