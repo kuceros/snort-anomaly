@@ -16,6 +16,13 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //--------------------------------------------------------------------------
 // libml.cc author Brandon Stultz <brastult@cisco.com>
+//--------------------------------------------------------------------------
+// Edited by Rostislav Kucera <kucera.rosta@gmail.com>, 2024
+// Added support for flow models
+// Functions:
+// - buildFlowModel
+// - runFlowModel
+//--------------------------------------------------------------------------
 
 #include <cstdint>
 #include <utility>
@@ -175,7 +182,8 @@ bool BinaryClassifier::run(const char* buffer,
     return true;
 }
 
-bool BinaryClassifier::runFlowModel(float value1, float value2, float value3, float value4, float value5, float& output)
+bool BinaryClassifier::runFlowModel(float value1, float value2, float value3, 
+    float value4, float value5, float& output)
 {
     if(interpreter == nullptr)
         return false;

@@ -16,6 +16,13 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //--------------------------------------------------------------------------
 // libml.h author Brandon Stultz <brastult@cisco.com>
+//--------------------------------------------------------------------------
+// Edited by Rostislav Kucera <kucera.rosta@gmail.com>, 2024
+// Added support for flow models
+// Functions:
+// - buildFlowModel
+// - runFlowModel
+//--------------------------------------------------------------------------
 
 #pragma once
 
