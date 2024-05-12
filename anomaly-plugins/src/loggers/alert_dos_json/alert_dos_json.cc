@@ -451,7 +451,8 @@ DoSJsonLogger::DoSJsonLogger(DoSJsonModule* m) : file(m->file ? F_NAME : "stdout
 /**
  * @brief Initializes the JSON log and retrieves IP addresses.
  * 
- * This function initializes the JSON log with the file name, log buffer size, and limit specified in the DoSJsonLogger. It then retrieves the IP addresses from the IP variable table and stores them in the default_ips map.
+ * This function initializes the JSON log with the file name, log buffer size, and limit specified in the DoSJsonLogger. 
+ * It then retrieves the IP addresses from the IP variable table and stores them in the default_ips map.
  */
 void DoSJsonLogger::open()
 {
