@@ -40,12 +40,10 @@ using namespace snort;
 using namespace std;
 
 /**
- * @brief Loads scaler information from a file.
- * 
  * This function reads scaler information from a file with the given filename. The details of the scaler information and the file format are not provided in the code snippet.
  * 
- * @param filename The name of the file from which the scaler information will be loaded.
- * @return ScalerInfo The loaded scaler information.
+ * filename: The name of the file from which the scaler information will be loaded.
+ * return: The loaded scaler information.
  */
 std::vector<float> FlowMLEventHandler::minMaxScaling(const std::vector<float>& data, const std::vector<float>& minVals, const std::vector<float>& maxVals) {
     std::vector<float> scaledData(data.size());
@@ -56,12 +54,10 @@ std::vector<float> FlowMLEventHandler::minMaxScaling(const std::vector<float>& d
 }
 
 /**
- * @brief Loads scaler information from a file.
- * 
  * This function reads scaler information from a file with the given filename. The details of the scaler information and the file format are not provided in the code snippet.
  * 
- * @param filename The name of the file from which the scaler information will be loaded.
- * @return ScalerInfo The loaded scaler information.
+ * filename: The name of the file from which the scaler information will be loaded.
+ * return: The loaded scaler information.
  */
 ScalerInfo FlowMLEventHandler::loadScalerInfo(const std::string& filename) {
     ScalerInfo scaler_info;
@@ -100,12 +96,10 @@ ScalerInfo FlowMLEventHandler::loadScalerInfo(const std::string& filename) {
 }
 
 /**
- * @brief Handles the given data event for the specified flow.
- * 
  * This function handles flows and predict if the flow is malicious or not.
  * 
- * @param event The data event to handle.
- * @param flow The flow for which to handle the event.
+ * event: The data event to handle.
+ * flow: The flow for which to handle the event.
  */
 void FlowMLEventHandler::handle(DataEvent& event, Flow* flow)
 {

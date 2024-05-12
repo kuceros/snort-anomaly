@@ -41,11 +41,11 @@ using namespace snort;
 using namespace std;
 
 /**
- * @brief Saves the given thresholds map to a file.
+ * Function saves the given thresholds map to a file.
  * 
- * @param thresholds_map The thresholds map to be saved.
- * @param interval The interval for which the thresholds were calculated.
- * @param filename The name of the file to which the thresholds map will be saved.
+ * thresholds_map: The thresholds map to be saved.
+ * interval: The interval for which the thresholds were calculated.
+ * filename: The name of the file to which the thresholds map will be saved.
  */
 void IntervalDetectorEventHandler::saveModel(map<string, GroupThresholds>& thresholds_map, int interval, const string& filename) {
     ofstream outfile(filename, ios::binary);
@@ -69,12 +69,12 @@ void IntervalDetectorEventHandler::saveModel(map<string, GroupThresholds>& thres
 }
 
 /**
- * @brief Loads a thresholds map from a file.
+ * This function reads the interval and the size of the thresholds map from the file first. 
+ * Then, for each pair in the thresholds map, it reads the size of the key, the key itself, and the value from the file. 
+ * It throws a runtime error if the file cannot be opened.
  * 
- * This function reads the interval and the size of the thresholds map from the file first. Then, for each pair in the thresholds map, it reads the size of the key, the key itself, and the value from the file. It throws a runtime error if the file cannot be opened.
- * 
- * @param filename The name of the file from which the thresholds map will be loaded.
- * @return pair<map<string, GroupThresholds>, int> The loaded thresholds map and the interval.
+ * filename: The name of the file from which the thresholds map and interval will be loaded.
+ * return: The loaded thresholds map and the interval.
  */
 pair<map<string, GroupThresholds>, int> IntervalDetectorEventHandler::loadModel(const string& filename) {
     map<string, GroupThresholds> thresholds_map;
@@ -179,14 +179,12 @@ pair<map<string, GroupThresholds>, int> IntervalDetectorEventHandler::loadModel(
     return {thresholds_map, interval};
 }
 
-/**
- * @brief Calculates the Upper Control Limit (UCL) for the given parameters.
+/** 
+ * This function calculates the Upper Control Limit (UCL) for the given window, interval, and number of standard deviations.
  * 
- * This function iterates over the stats_map and calculates the sum of source count, destination count, and source bytes. The details of the calculation are not provided in the code snippet.
- * 
- * @param window The window size for the UCL calculation.
- * @param interval The interval for the UCL calculation.
- * @param num_sigma The number of standard deviations for the UCL calculation.
+ * window: The window size for the UCL calculation.
+ * interval: The interval for the UCL calculation.
+ * num_sigma: The number of standard deviations for the UCL calculation.
  */
 void IntervalDetectorEventHandler::CalcUCL(int window, int interval, int num_sigma){
 
@@ -398,12 +396,11 @@ void IntervalDetectorEventHandler::CalcUCL(int window, int interval, int num_sig
 }
 
 /**
- * @brief Converts seconds to a datetime string.
+ * This function converts the given seconds to a time_t, converts that to a tm struct using localtime, 
+ * and then formats that into a string using strftime.
  * 
- * This function converts the given seconds to a time_t, converts that to a tm struct using localtime, and then formats that into a string using strftime.
- * 
- * @param seconds The seconds to be converted.
- * @return string The datetime string.
+ * seconds: The seconds to be converted.
+ * return: The datetime string.
  */
 string IntervalDetectorEventHandler::convertSecondsToDateTime(long seconds) {
     time_t timestamp = seconds;
@@ -417,13 +414,15 @@ string IntervalDetectorEventHandler::convertSecondsToDateTime(long seconds) {
 }
 
 /**
- * @brief Queues an event based on the given parameters and the thresholds map.
+ * This function checks if the given name exists in the stats_map and the thresholds_map. 
+ * If the name exists and the from parameter is true and the to parameter is false, 
+ * it checks if the udp_flows, tcp_flows, or icmp_flows for the name in the stats_map 
+ * exceed their respective thresholds in the thresholds_map. 
+ * If any of the flows exceed their threshold, it queues the corresponding event.
  * 
- * This function checks if the given name exists in the stats_map and the thresholds_map. If the name exists and the from parameter is true and the to parameter is false, it checks if the udp_flows, tcp_flows, or icmp_flows for the name in the stats_map exceed their respective thresholds in the thresholds_map. If any of the flows exceed their threshold, it queues the corresponding event.
- * 
- * @param name The name of the group to check.
- * @param from The from flag for the event.
- * @param to The to flag for the event.
+ * name: The name of the group to check.
+ * from: The from flag for the event.
+ * to: The to flag for the event.
  */
 void IntervalDetectorEventHandler::queueEvent(string name, bool from, bool to) {
     if(from and !to)
@@ -475,12 +474,10 @@ void IntervalDetectorEventHandler::queueEvent(string name, bool from, bool to) {
 }
 
 /**
- * Handles the given data event for the specified flow.
- * 
  * This function is detecting DoS(DDoS) attacks based on the number of packets, bytes and number of flows in a given interval.
  * 
- * @param event - The data event to handle.
- * @param flow - The flow for which to handle the event.
+ * event: The data event to handle.
+ * flow: The flow for which to handle the event.
  */
 void IntervalDetectorEventHandler::handle(DataEvent& event, Flow* flow)
 {

@@ -169,17 +169,12 @@ public:
 };
 
 /**
- * @brief Sets the configuration values based on the provided value.
- * 
  * This function checks the name of the provided value and sets the corresponding configuration value. 
  * If the name is "mapping", the mapping configuration value is set. 
  * If the name is "file", the file configuration value is set. 
  * If the name is "db", the db_name configuration value is set.
  * 
- * @param char* An unused parameter.
- * @param Value& v The value to be set.
- * @param SnortConfig* An unused parameter.
- * @return bool Always returns true.
+ * return: Always returns true.
  */
 bool DoSJsonModule::set(const char*, Value& v, SnortConfig*)
 {
@@ -198,14 +193,9 @@ bool DoSJsonModule::set(const char*, Value& v, SnortConfig*)
 }
 
 /**
- * @brief Begins the configuration process for the DoSJsonModule.
- * 
  * This function is not yet implemented.
  * 
- * @param char* An unused parameter.
- * @param int An unused parameter.
- * @param SnortConfig* An unused parameter.
- * @return bool Always returns true.
+ * return: returns true.
  */
 bool DoSJsonModule::begin(const char*, int, SnortConfig* sc)
 {
@@ -239,13 +229,11 @@ public:
     }
 
     /**
-     * @brief Converts seconds to a formatted date-time string.
-     * 
      * This function takes a long integer representing seconds since the epoch (1970-01-01 00:00:00) 
      * and converts it to a string representing the date and time in the format "YYYY-MM-DD HH:MM:SS".
      * 
-     * @param seconds The number of seconds since the epoch.
-     * @return std::string The formatted date-time string.
+     * seconds: The number of seconds since the epoch.
+     * return: The formatted date-time string.
      */
     std::string convertSecondsToDateTime(long seconds) {
         time_t timestamp = seconds;
@@ -259,14 +247,12 @@ public:
     }
 
     /**
-     * @brief Extracts a message from a string.
-     * 
      * This function checks if the provided string is enclosed in triple quotes. 
      * If it is, the function returns the string without the enclosing triple quotes. 
      * If the string is not enclosed in triple quotes, the function returns the original string.
      * 
-     * @param str The string from which to extract the message.
-     * @return std::string The extracted message.
+     * str: The string from which to extract the message.
+     * return: The extracted message.
      */
     std::string extractMsg(const std::string& str) {
         if (str.size() >= 6 && str.substr(0, 3) == "\"\"\"" && str.substr(str.size() - 3) == "\"\"\"") {
@@ -276,14 +262,12 @@ public:
     }
 
     /**
-     * @brief Extracts a reference from a string.
-     * 
      * This function checks if the provided string is enclosed in quotes. 
      * If it is, the function returns the string without the enclosing quotes. 
      * If the string is not enclosed in quotes, the function returns the original string.
      * 
-     * @param str The string from which to extract the reference.
-     * @return std::string The extracted reference.
+     * str: The string from which to extract the reference.
+     * return: The extracted reference.
      */
     std::string extractRef(const std::string& str) {
         if (str.size() >= 2 && str.substr(0, 1) == "\"" && str.substr(str.size() - 1) == "\"") {
@@ -293,12 +277,10 @@ public:
     }
 
     /**
-     * @brief Returns a string representation of the protocol.
-     * 
      * This function takes an integer representing a protocol and returns a string representation of that protocol. The function currently supports ICMP (1), IGMP (2), TCP (6), and UDP (17). If the provided integer does not match any of these, the function returns an empty string.
      * 
-     * @param ip_proto The integer representing the protocol.
-     * @return std::string The string representation of the protocol.
+     * ip_proto: The integer representing the protocol.
+     * return: The string representation of the protocol.
      */
     std::string get_proto_str(uint8_t ip_proto)
     {
@@ -318,13 +300,11 @@ public:
     }
 
     /**
-     * @brief Retrieves the Autonomous System Number (ASN) for a given IP address.
+     * Function uses the MaxMind DB to look up the ASN for a given IP address. The function returns the ASN as a 32-bit unsigned integer.
      * 
-     * This function uses the MaxMind DB to look up the ASN for a given IP address. The function returns the ASN as a 32-bit unsigned integer.
-     * 
-     * @param ip The IP address for which to retrieve the ASN.
-     * @param my_mmdb The MaxMind DB to use for the lookup.
-     * @return uint32_t The ASN for the given IP address.
+     * ip: The IP address for which to retrieve the ASN.
+     * my_mmdb: The MaxMind DB to use for the lookup.
+     * return: The ASN for the given IP address.
      */
     uint32_t getASN(const char* ip, MMDB_s my_mmdb)
     {
@@ -375,13 +355,11 @@ public:
 };
 
 /**
- * @brief Constructor for the DoSJsonLogger class.
- * 
  * This constructor initializes the DoSJsonLogger with the parameters defined in the provided DoSJsonModule. 
- * It also opens the mapping file and reads its contents line by line, extracting the sid, proto, source, 
+ * It also opens the MITRE ATT&CK mapping file and reads its contents line by line, extracting the sid, proto, source, 
  * src_port, arrow, destination, and dst_port from each line.
  * 
- * @param m The DoSJsonModule from which to initialize the DoSJsonLogger.
+ * m: The DoSJsonModule from which to initialize the DoSJsonLogger.
  */
 DoSJsonLogger::DoSJsonLogger(DoSJsonModule* m) : file(m->file ? F_NAME : "stdout"), limit(m->limit), fields(std::move(m->fields)), sep(m->sep), db_name(m->db_name), interval(m->interval), ml(m->ml)
 { 
@@ -449,8 +427,6 @@ DoSJsonLogger::DoSJsonLogger(DoSJsonModule* m) : file(m->file ? F_NAME : "stdout
 }
 
 /**
- * @brief Initializes the JSON log and retrieves IP addresses.
- * 
  * This function initializes the JSON log with the file name, log buffer size, and limit specified in the DoSJsonLogger. 
  * It then retrieves the IP addresses from the IP variable table and stores them in the default_ips map.
  */
@@ -483,8 +459,6 @@ void DoSJsonLogger::open()
 }
 
 /**
- * @brief Closes the JSON log and the MaxMind DB.
- * 
  * This function checks if the JSON log has been initialized. If it has, the function terminates the JSON log. 
  * The function also checks if the MaxMind DB has been opened successfully. If it has, the function closes the DB.
  */
@@ -499,8 +473,6 @@ void DoSJsonLogger::close()
 }
 
 /**
- * @brief Alerts the user of an event.
- * 
  * This function extracts the client and server IP addresses from the provided packet. 
  * If the packet is associated with a flow, the function also retrieves the client and server Autonomous System Numbers (ASNs)
  * from the MaxMind DB. The function then logs the alert details in JSON format.
@@ -509,9 +481,9 @@ void DoSJsonLogger::close()
  * 
  * 
  *
- * @param Packet* p The packet associated with the event.
- * @param char* msg The message to be displayed.
- * @param Event& event The event to be alerted.
+ * p: The packet associated with the event.
+ * msg: The message to be displayed.
+ * event: The event to be alerted.
  */
 void DoSJsonLogger::alert(Packet* p, const char* msg, const Event& event)
 {

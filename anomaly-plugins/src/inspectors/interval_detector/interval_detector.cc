@@ -89,16 +89,12 @@ class IntervalDetectorModule : public Module
 public:
 
     /**
-     * @brief Constructor for the IntervalDetectorModule class.
-     * 
      * This constructor initializes the IntervalDetectorModule with the module name, 
      * help message, and parameters defined in the s_params array.
      */
     IntervalDetectorModule() : Module(MOD_NAME, s_help, s_params) { }
 
     /**
-     * @brief Destructor for the IntervalDetectorModule class.
-     * 
      * This destructor deletes the config object if it exists.
      */
     ~IntervalDetectorModule() override
@@ -107,16 +103,11 @@ public:
     }
 
     /**
-     * @brief Begins the configuration process for the IntervalDetectorModule.
-     * 
      * This function checks if the config object exists. If it does, the function returns false, 
      * indicating that the configuration process cannot begin. If the config object does not exist, 
      * the function returns true, indicating that the configuration process can begin.
      * 
-     * @param char* Unused parameter.
-     * @param int Unused parameter.
-     * @param SnortConfig* Unused parameter.
-     * @return bool True if the configuration process can begin, false otherwise.
+     * return: True if the configuration process can begin, false otherwise.
      */
     bool begin(const char*, int, SnortConfig*) override
     {
@@ -128,8 +119,6 @@ public:
     }
 
     /**
-     * @brief Sets the configuration values based on the provided value.
-     * 
      * This function checks the name of the provided value and sets the corresponding 
      * configuration value based on it. 
      * If the name is "file_labels", it sets the file_name configuration value. 
@@ -140,10 +129,7 @@ public:
      * If the name is "db", it sets the db_name configuration value. 
      * If the name is "win_size", it sets the win_size configuration value.
      * 
-     * @param char* Unused parameter.
-     * @param Value& v The value to set.
-     * @param SnortConfig* Unused parameter.
-     * @return bool True if the configuration value was set, false otherwise.
+     * return: bool True if the configuration value was set, false otherwise.
      */
     bool set(const char*, Value& v, SnortConfig*) override
     {
@@ -176,21 +162,17 @@ public:
     }
 
     /**
-     * @brief Returns the generator identifier for the IntervalDetectorModule.
-     * 
      * This function returns the generator identifier for the IntervalDetectorModule, which is INTERVAL_DETECTOR_GID.
      * 
-     * @return unsigned the generator identifier for the IntervalDetectorModule.
+     * return: GID for the IntervalDetectorModule.
      */
     unsigned get_gid() const override
     { return INTERVAL_DETECTOR_GID; }
 
     /**
-     * @brief Returns the rules for the IntervalDetectorModule.
+     * Function returns the rules for the IntervalDetectorModule, which are defined in the inter_rules array.
      * 
-     * This function returns the rules for the IntervalDetectorModule, which are defined in the inter_rules array.
-     * 
-     * @return const RuleMap* The rules for the IntervalDetectorModule.
+     * return: The rules for the IntervalDetectorModule.
      */
     const RuleMap* get_rules() const override
     {
@@ -198,11 +180,9 @@ public:
     }
 
     /**
-     * @brief Returns the configuration data for the IntervalDetectorModule.
+     * Function returns the configuration data for the IntervalDetectorModule and sets the config pointer to null.
      * 
-     * This function returns the configuration data for the IntervalDetectorModule and sets the config pointer to null.
-     * 
-     * @return IntervalDetectorConfig* The configuration data for the IntervalDetectorModule.
+     * return: The configuration data for the IntervalDetectorModule.
      */
     IntervalDetectorConfig* get_data()
     {
@@ -224,11 +204,10 @@ class IntervalDetectorInspector : public Inspector
 {
 public:
     /**
-     * @brief Constructor for the IntervalDetectorInspector class.
+     * This constructor initializes the IntervalDetectorInspector with the data from the provided IntervalDetectorModule. 
+     * It asserts that the config is not null.
      * 
-     * This constructor initializes the IntervalDetectorInspector with the data from the provided IntervalDetectorModule. It asserts that the config is not null.
-     * 
-     * @param IntervalDetectorModule& mod The module from which to get the data.
+     * mod: The module from which to get the data.
      */
     IntervalDetectorInspector(IntervalDetectorModule& mod)
     {
@@ -237,8 +216,6 @@ public:
     }
 
     /**
-     * @brief Destructor for the IntervalDetectorInspector class.
-     * 
      * This destructor deletes the config object if it exists.
      */
     ~IntervalDetectorInspector() override
@@ -248,14 +225,12 @@ public:
     void eval(Packet*) override { }
 
     /**
-     * @brief Configures the SnortConfig object.
-     * 
      * This function asserts that the config is not null, checks if both training and load_model are true, 
      * and if they are, prints a warning message and returns false. 
      * It then sets the run flags on the SnortConfig object and checks if the file_name in the config is not empty.
      * 
-     * @param SnortConfig* sc The SnortConfig object to configure.
-     * @return bool True if the configuration was successful, false otherwise.
+     * sc: The SnortConfig object to configure.
+     * return: True if the configuration was successful, false otherwise.
      */
     bool configure(SnortConfig* sc) override
     {
