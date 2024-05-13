@@ -236,7 +236,7 @@ public:
             WarningMessage("Failed to build model.\n");
             return false;
         }
-    
+
         config->scaler_info = loadScalerInfo(config->scaler_file);
         if(config->scaler_info.min_values.empty() or config->scaler_info.max_values.empty()){
             WarningMessage("Failed to load scaler file.\n");

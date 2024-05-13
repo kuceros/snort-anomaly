@@ -54,48 +54,6 @@ std::vector<float> FlowMLEventHandler::minMaxScaling(const std::vector<float>& d
 }
 
 /**
- * This function reads scaler information from a file with the given filename. The details of the scaler information and the file format are not provided in the code snippet.
- * 
- * filename: The name of the file from which the scaler information will be loaded.
- * return: The loaded scaler information.
- */
-ScalerInfo FlowMLEventHandler::loadScalerInfo(const std::string& filename) {
-    ScalerInfo scaler_info;
-
-    std::ifstream file(filename, std::ios::binary);
-    if (!file) {
-        ErrorMessage("Failed to load scaler file\n");
-        return scaler_info;
-    }
-
-    uint32_t min_count;
-    file.read(reinterpret_cast<char*>(&min_count), sizeof(min_count));
-
-    std::vector<double> temp_min_values(min_count);
-    file.read(reinterpret_cast<char*>(temp_min_values.data()), min_count * sizeof(double));
-
-    scaler_info.min_values.resize(min_count);
-    for (size_t i = 0; i < min_count; ++i) {
-        scaler_info.min_values[i] = static_cast<float>(temp_min_values[i]);
-    }
-
-    uint32_t max_count;
-    file.read(reinterpret_cast<char*>(&max_count), sizeof(max_count));
-
-    std::vector<double> temp_max_values(max_count);
-    file.read(reinterpret_cast<char*>(temp_max_values.data()), max_count * sizeof(double));
-
-    scaler_info.max_values.resize(max_count);
-    for (size_t i = 0; i < max_count; ++i) {
-        scaler_info.max_values[i] = static_cast<float>(temp_max_values[i]);
-    }
-
-    file.close(); 
-
-    return scaler_info;
-}
-
-/**
  * This function handles flows and predict if the flow is malicious or not.
  * 
  * event: The data event to handle.
