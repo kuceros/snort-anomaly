@@ -4,7 +4,7 @@ This repository contains three plugins for Snort 3: two detection modules, one b
 
 ## Requirements
 Install Snort 3:\
-&emsp; Snort web: https://www.snort.org/downloads\
+&emsp; Snort web: https://www.snort.org/downloads \
 &emsp; GitHub source: https://github.com/snort3/snort3
 
 Download MaxMind GeoLite2 ASN binary database:\
