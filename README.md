@@ -1,10 +1,17 @@
 # Snort anomaly plugins
 
-Installed Snort 3 required! 
+This repository contains three plugins for Snort 3: two detection modules, one based on statistical analysis and the other on a neural network; and an output module, which alerts if there is an event from those two detection modules. If the event originates from the statistical module, information about the anomaly interval is also extended with data from the MITRE ATT&CK knowledge base. MaxMind GeoLite2 is utilized for grouping IP addresses.
 
-Snort web: https://www.snort.org/downloads
+## Requirements
+Install Snort 3:\
+&emsp; Snort web: https://www.snort.org/downloads\
+&emsp; GitHub source: https://github.com/snort3/snort3
 
-GitHub source: https://github.com/snort3/snort3
+Download MaxMind GeoLite2 ASN binary database:\
+&emsp; MaxMind web: https://dev.maxmind.com/geoip/geolite2-free-geolocation-data
+
+Create CSV Rule-MITRE ATT&CK mapping file with this script:\
+&emsp; GitHub source: https://github.com/Resistine/SnortRules
 
 ## Installation
 1. Download this repository and extract it.
@@ -39,7 +46,8 @@ GitHub source: https://github.com/snort3/snort3
 ## Training FlowML model
 1. Run Snort 3 with *interval_detector* enabled, in which "file_labels" with file path is enabled.
 2. Run `./create_data.sh "<your_path>/datasets"` which creates labeled flow data from input dataset for training ML model.
-3. Run `python3 train_snort.py`
+3. Run `pip install -r requirements.txt` to install required Python libraries.
+3. Run `python3 train_snort.py "<your_csv>"` to train a neural network model.
 4. Output files can be used in FlowML module and set as an input as in the example configuration below...
 
 
@@ -49,7 +57,7 @@ GitHub source: https://github.com/snort3/snort3
         file_labels = 'data_labeled.csv', --output file with labeled data
         training = false, --training thresholds
         load_model = true, --load pretrained thresholds
-        training_time = 20000, --training time in seconds
+        training_time = 20100, --training time in seconds
         model = '<your_path>/interval.model', --pretrained model with thresholds
         db = '<your_path>/GeoLite2-ASN/GeoLite2-ASN.mmdb', --ASN database
         win_size = 300, --training window if model not loaded
@@ -59,9 +67,9 @@ GitHub source: https://github.com/snort3/snort3
 
     flow_ml =
     {
-        model = '<your_path>/Desktop/snort.model', --load ML model
-        threshold = 0.9, --classification threshold
-        scaler_file = '<your_path>/scaler_info.bin', --file with data for incoming data normalization
+        model = '<your_path>/flowml.model', --load ML model
+        threshold = 0.99, --classification threshold
+        scaler_file = '<your_path>/scaling.bin', --file with data for incoming data normalization
     }
 
     alert_dos_json = { 
@@ -79,5 +87,8 @@ GitHub source: https://github.com/snort3/snort3
 
 Example path to plugins: ```"/usr/local/snort/lib/snort/plugins/extra/"```
 
+### Creating confusion matrix and SHAP for nerual network model:
+
+`python3 confusion_shap.py -d <data_labeled.csv> -s <scaling.bin> -m <flow.model>`
 
 
