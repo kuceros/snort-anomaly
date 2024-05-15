@@ -1,5 +1,6 @@
 //--------------------------------------------------------------------------
-// Copyright (C) 2017-2024 Cisco and/or its affiliates. All rights reserved.
+// Copyright (C) 2014-2024 Cisco and/or its affiliates. All rights reserved.
+// Copyright (C) 2013-2013 Sourcefire, Inc.
 //
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License Version 2 as published
@@ -15,17 +16,7 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //--------------------------------------------------------------------------
-
-// alert_json.cc author Russ Combs <rucombs@cisco.com>
-//
-
-// preliminary version based on hacking up alert_csv.cc.  should probably
-// share a common implementation class.
-
-// if a more sophisticated solution is needed, for example to escape \ or
-// whatever, look at this from Joel: https://github.com/jncornett/alert_json,
-// which is also more OO implemented.  should pull in that at some point.
-
+// alert_ex.cc author Russ Combs <rucombs@cisco.com>
 // modified alert_dos_json.cc by Rostislav Kucera <kucera.rosta@gmail.com>, 2024
 
 #ifdef HAVE_CONFIG_H
