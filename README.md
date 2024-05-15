@@ -87,7 +87,7 @@ Create CSV Rule-MITRE ATT&CK mapping file with this script:\
 
 Example path to plugins: ```"/usr/local/snort/lib/snort/plugins/extra/"```
 
-### Creating confusion matrix and SHAP for nerual network model:
+### Creating confusion matrix and SHAP for neural network model:
 
 `python3 confusion_shap.py -d <data_labeled.csv> -s <scaling.bin> -m <flow.model>`
 
